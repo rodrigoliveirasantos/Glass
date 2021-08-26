@@ -5,7 +5,6 @@ O projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) v
 <br/>
 
 ## Requisitos:
-<hr/>
 
 - [Node](https://nodejs.org/en/)
 - [Angular CLI](https://angular.io/cli)
