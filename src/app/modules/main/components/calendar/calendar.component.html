@@ -1,0 +1,62 @@
+<div class="calendar-header">
+    <div class="labels" *ngFor="let a of abreviations; index as i" [ngClass]="{ 'text-red': (i === 0 || i === 6) }">
+        {{ a }}
+    </div>
+</div>
+
+<table class="calendar-grid">
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+    <tr class="calendar-row">
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+        <app-calendar-cell></app-calendar-cell>
+    </tr>
+</table>

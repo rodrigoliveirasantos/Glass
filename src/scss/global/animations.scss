@@ -1,0 +1,109 @@
+@use 'functions' as *;
+
+
+@include keyframes(to-up) {
+    from { transform: translateY(80px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@include keyframes(grow) {
+    from { transform: scale(.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@include keyframes(appear){
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@include keyframes(desappear) {
+    from { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@include keyframes(scaleX){
+    from { @include transform(scaleX(0)); }
+    to { @include transform(scaleX(1)) }
+}
+
+@include keyframes(scale){
+    from { @include transform(scale(0)); }
+    to { @include transform(scale(1)); }
+}
+
+@include keyframes(shrinkX) {
+    from { @include transform(scaleX(1)); }
+    to { @include transform(scaleX(0)); }
+}
+
+@include keyframes(right-to-left){
+    from { @include transform(translateX(40px)); }
+    to { @include transform(translateX(0)); }
+}
+
+@include keyframes(bottom-to-top){
+    from { @include transform(translateY(40px)); }
+    to { @include transform(translateY(0)); }
+}
+
+@include keyframes(top-to-bottom){
+    from { @include transform(translateY(-10px)); }
+    to { @include transform(translateY(0)); }
+}
+
+@include keyframes(pop){
+    0% { @include transform(scale(1)); }
+    50% { @include transform(scale(1.1)); }
+    100% { @include transform(scale(1)); }
+}
+
+@include keyframes(bouncing-to-right){
+    0% { @include transform(translateX(0%)) }
+    50% { @include transform(translateX(-50%)) }
+    100% { @include transform(translateX(0%)) }
+}
+
+@include keyframes(bouncing-to-top){
+    0% { @include transform(translateY(0%)) }
+    50% { @include transform(translateY(5%)) }
+    100% { @include transform(translateY(0%)) }
+}
+
+
+@include keyframes(translate-300-down) {
+    60% { @include transform(translate3d(0, -400%, 0)); } /* Como o elemento pai ta rotado, é necessario inverter o valor do translate */
+    100% { @include transform(translate3d(0, -400%, 0)); }
+}
+
+@include keyframes(bouncing){
+    0% { @include transform(translate3d(0, 15%, 0)); }
+    50% { @include transform(translate3d(0, -9%, 0)); }
+    100% { @include transform(translate3d(0, 15%, 0)); }
+}
+
+@include keyframes(swinging) {
+    0% { @include transform(rotate(0deg))}
+    50% { @include transform(rotate(10deg))}
+    100% { @include transform(rotate(0deg))}
+}
+
+@include keyframes(rotating) {
+    0% { @include transform(rotate(0deg))}
+    100% { @include transform(rotate(1turn))}
+}
+
+
+[data-animate=to-up] {
+    animation: to-up 1s ease backwards;
+}
+
+[data-animate=grow] {
+    animation: grow 1s ease backwards;
+}
+
+[data-animate] {
+    animation-play-state: paused;
+}
+[data-animate].animated {
+    animation-play-state: running;
+}

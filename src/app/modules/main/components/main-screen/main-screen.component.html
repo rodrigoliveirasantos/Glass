@@ -1,0 +1,85 @@
+
+<div class="app-wrapper">
+    <app-aside></app-aside>
+    
+    <div class="main-content">
+        <div class="toolbar">
+            <div class="date">
+                <div class="date-info"><span id="month">{{ monthNames[selectedMonth] }}</span>, <span id="year">{{ selectedYear }}</span></div>
+                <div id="date-menu-icon" class="date-menu-icon" (click)="onClickOnControl($event)">
+                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.64307 12.1428H22.1431V14.6428H24.6431V7.14282C24.6431 5.76782 23.5181 4.64282 22.1431 4.64282H20.8931V2.14282H18.3931V4.64282H8.39307V2.14282H5.89307V4.64282H4.64307C3.25557 4.64282 2.15557 5.76782 2.15557 7.14282L2.14307 24.6428C2.14307 26.0178 3.25557 27.1428 4.64307 27.1428H13.3931V24.6428H4.64307V12.1428ZM4.64307 7.14282H22.1431V9.64282H4.64307V7.14282ZM26.9431 19.9928L26.0556 20.8803L23.4056 18.2303L24.2931 17.3428C24.7806 16.8553 25.5681 16.8553 26.0556 17.3428L26.9431 18.2303C27.4306 18.7178 27.4306 19.5053 26.9431 19.9928ZM22.5181 19.1178L25.1681 21.7678L18.5431 28.3928H15.8931V25.7428L22.5181 19.1178Z" fill="#3F3791"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="professional">
+                <div class="professional-name">Ketlin da Silva Souza Santos</div>
+                <div class="arrow">
+                    <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L8.5 9.68421L16 1" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="professional-info">
+                <div class="professional-rotation">
+                    <span class="info" id="rotation">Segunda, Quarta e Sexta</span>
+                    <span class="professional-info-icon">
+                        <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5 2V5H9.5" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M1.5 10V7H4.5" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2.755 4.50004C3.00858 3.78343 3.43957 3.14274 4.00773 2.63775C4.5759 2.13275 5.26273 1.77992 6.00414 1.61217C6.74555 1.44441 7.51738 1.46721 8.2476 1.67842C8.97781 1.88964 9.64263 2.28239 10.18 2.82004L12.5 5.00004M1.5 7.00004L3.82 9.18004C4.35737 9.71768 5.02219 10.1104 5.7524 10.3217C6.48262 10.5329 7.25445 10.5557 7.99586 10.3879C8.73727 10.2202 9.4241 9.86732 9.99227 9.36233C10.5604 8.85734 10.9914 8.21664 11.245 7.50004" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+
+                <div class="professional-role">
+                    <span class="info" id="role">Endocrinologista</span>
+                    <span class="professional-info-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 10.5V9.5C10 8.96957 9.78929 8.46086 9.41421 8.08579C9.03914 7.71071 8.53043 7.5 8 7.5H4C3.46957 7.5 2.96086 7.71071 2.58579 8.08579C2.21071 8.46086 2 8.96957 2 9.5V10.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 5.5C7.10457 5.5 8 4.60457 8 3.5C8 2.39543 7.10457 1.5 6 1.5C4.89543 1.5 4 2.39543 4 3.5C4 4.60457 4.89543 5.5 6 5.5Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div id="calendar-control" class="calendar-control" #calendarControl>
+            <div class="content">
+                <div class="header">
+                    <div class="year-input-control" (click)="incrementYear(-1)">
+                        <svg width="16" height="4" viewBox="0 0 16 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 2H8H14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    
+                    <input id="year-input" name="year-input" [value]="selectedYear" (change)="formatYearInput($event)" />
+                    
+                    <div class="year-input-control" (click)="incrementYear()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 8.18182H8M14 8.18182H8M8 8.18182V2V14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="month-grid" #monthGrid>
+                        <div 
+                            class="month-input" 
+                            *ngFor="let name of monthNames; index as i"  
+                            [ngClass]="{ 'selected': i === selectedMonth }" 
+                            (click)="onClickMonthNode(i)"
+                        >
+                            {{ name.substring(0, 3) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-calendar [selectedYear]="selectedYear" [selectedMonth]="selectedMonth"></app-calendar>
+    </div>
+
+    <app-action-menu></app-action-menu>
+</div>

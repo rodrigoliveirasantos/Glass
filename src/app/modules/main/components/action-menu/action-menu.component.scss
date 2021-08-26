@@ -1,0 +1,42 @@
+@use '../../../../../scss/style.scss' as *;
+
+:host {
+    display: block;
+    width: 25%;
+    max-width: 430px;
+}
+
+.action-menu {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: 90px;
+    color: white;
+
+    @extend .dark-blue-\>light-blue-vert;
+}
+
+.header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 33px;
+
+    .selected-cell-date {
+        font-size: 2.4rem;
+        margin-bottom: 28px;
+    }
+    
+    .blocked-cell-reason {
+        font-size: 1.8rem;
+    }    
+}
+
+.container {
+    padding: 0 20px;
+}
+
+.btn {
+    width: 100%;
+    font-size: 1.4rem;
+    padding: { left: 65px; right: 65px }
+}

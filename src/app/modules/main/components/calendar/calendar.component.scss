@@ -1,0 +1,69 @@
+@use '../../../../../scss/global/variables.scss';
+
+:host {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 100%;
+    padding-top: 48px;
+}
+
+.calendar-header {
+    display: flex;
+
+    .labels {
+        width: 14.2857%; // ~= 100 / 7
+        padding-bottom: 4px;
+    
+        text-align: center;
+        font-family: 'Rubik', 'Poppins', sans-serif;
+        font-size: 1.6rem;
+    
+        &.text-red {
+            color: var(--red)
+        }
+    }    
+} 
+
+.calendar-grid {
+    width: 100%;
+    height: 100%;
+    display: table;
+    border-collapse: collapse;
+
+    .calendar-row {
+
+        .calendar-cell {
+            width: 14.2857%;
+            height: auto;
+            position: relative;
+           
+            border: 1px solid var(--light-grey);
+            color: var(--light-grey);
+        
+            .day-state-icon {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                width: 16px;
+                height: 16px;
+                border-radius: 2px;
+                background-color: var(--green);
+            }
+        
+            .day {
+                position: absolute;
+                bottom: 1px;
+                right: 1px;
+        
+                font-size: 1.4rem;
+                font-weight: 300;
+                color: var(--light-grey);
+            }
+        }
+
+    }
+
+   
+}

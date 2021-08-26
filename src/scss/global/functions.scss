@@ -1,0 +1,141 @@
+@mixin mask($url, $size, $position) {
+    mask: url($url);
+    mask-size: $size;
+    mask-position: $position;
+
+    -webkit-mask: url($url);
+    -webkit-mask-size: $size;
+    -webkit-mask-position: $position;
+
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+}
+
+@mixin horizontal-align {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@mixin vertical-align {
+    top: 50%;
+    @include transform('translateY(-50%)');
+}
+
+@mixin center-align {
+    top: 50%;
+    left: 50%;
+    @include transform('translate(-50%, -50%)');
+}
+
+
+@mixin border-absolute($width, $height, $color) {
+    content: '';
+    width: $width;
+    height: $height;
+    background-color: $color;
+    position: absolute;
+}
+
+@mixin linear-gradient($gradient, $otherGradients: null) {
+    @if $otherGradients == null {
+        background-image: -webkit-linear-gradient(#{$gradient});
+        background-image: -moz-linear-gradient(#{$gradient});
+        background-image: -o-linear-gradient(#{$gradient});
+        background-image: linear-gradient(#{$gradient});
+    } @else {
+        background-image: -webkit-linear-gradient(#{$gradient}) -webkit-linear-gradient(#{$otherGradients});
+        background-image: -moz-linear-gradient(#{$gradient}) -moz-linear-gradient(#{$otherGradients});
+        background-image: -o-linear-gradient(#{$gradient}) -o-linear-gradient(#{$otherGradients});
+        background-image: linear-gradient(#{$gradient}) linear-gradient(#{$otherGradients});
+    }
+}
+
+@mixin linear-gradient-dual($deg, $from, $to, $start: 0%, $final: 100%) {
+    background: -webkit-linear-gradient($deg, $from $start, $to $final);
+    background: -moz-linear-gradient($deg, $from $start, $to $final);
+    background: -o-linear-gradient($deg, $from $start, $to $final);
+    background: linear-gradient($deg, $from $start, $to $final);
+}
+
+@mixin radial-gradient($x, $y, $fromColor, $toColor, $start: 0%, $final: 100%) {
+    background: -webkit-radial-gradient($x $y at 50% 50%, $fromColor $start, $toColor $final);
+    background: -moz-radial-gradient($x $y at 50% 50%, $fromColor $start, $toColor $final);
+    background: radial-gradient($x $y at 50% 50%, $fromColor $start, $toColor $final);
+}
+
+@mixin drop-shadow($x, $y, $shadow, $color) {
+    -webkit-filter: drop-shadow($x $y $shadow $color);
+    -ms-filter: drop-shadow($x $y $shadow $color);
+    filter: drop-shadow($x $y $shadow $color);
+}
+
+@mixin border($top, $right, $bottom, $left, $color: $primary, $type: 'solid') {
+    border-bottom: $bottom #{$type} $color;
+    border-right: $right #{$type} $color;
+    border-left: $left #{$type} $color;
+    border-top: $top #{$type} $color;
+}
+
+@mixin transform($value) {
+    -webkit-transform: #{$value};
+    -moz-transform: #{$value};
+    -o-transform: #{$value};
+    transform: #{$value};
+}
+
+@mixin flex {
+    display: -webkit-flex;
+    display: flex;
+}
+
+@mixin gap($value){
+    gap: $value;
+    grid-gap: $value;
+}
+
+@mixin grid-column($value){
+    -ms-grid-column: #{$value};
+    grid-column: #{$value};
+}
+
+/* EXPERIMENTAL */
+@mixin vendors($property, $value){
+    -webkit-#{$property}: #{$value};
+    -moz-#{$property}: #{$value};
+    -o-#{$property}: #{$value};
+    #{$property}: #{$value};
+}
+
+@mixin keyframes($name){
+    @-webkit-keyframes #{$name} {
+        @content;
+    }
+
+    @-moz-keyframes #{$name} {
+        @content;
+    }
+
+    @-o-keyframes #{$name} {
+        @content;
+    }
+
+    @keyframes #{$name} {
+        @content;
+    }
+}
+
+@mixin clamp($property, $min-size, $scaler, $max-size){
+    #{$property}:#{$max-size}; 
+    #{$property}:#{"min(max(#{$min-size}, #{$scaler}), #{$max-size})"}; 
+    #{$property}:clamp(#{$min-size}, #{$scaler}, #{$max-size});
+}
+
+@mixin fit-content {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+@mixin default-scroll {
+    scrollbar-color: var(--default-scroll-color);
+    scrollbar-width: var(--default-scroll-width);
+}

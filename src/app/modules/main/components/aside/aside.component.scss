@@ -1,0 +1,153 @@
+@use '../../../../../scss/global/functions.scss' as *;
+@use '../../../../../scss/style.scss' as *;
+
+$opening-transition: 0.2s ease-out;
+
+// Aside é flex pro footer poder ter margin-top auto
+aside {
+    -ms-flex-direction: column;
+    flex-direction: column;
+    align-items: center;
+
+    width: 62px;
+    min-width: 0;
+    height: 100vh;
+
+    @include flex;
+    @include vendors(transition, $opening-transition);
+    @extend .dark-blue-\>light-blue-vert;
+    
+    &:hover {
+        width: 15%;
+        min-width: 300px;
+
+        .aside-header .logo,
+        .aside-navigation .item .item-name,
+        .aside-footer .profile-info { 
+            display: block;
+        }
+    }
+}
+
+.aside-header {
+    padding-top: 86px;
+    margin-bottom: 52px;
+    min-height: 134px; // Padding-top + altura do logo
+
+    .logo {
+        display: none;
+
+        height: 48px;
+        margin: 0 auto;
+
+        @include fit-content;
+
+        img {
+            height: 100%;
+            width: auto;
+        }
+    }
+}
+
+.aside-navigation {
+    width: 100%;
+
+    .item {
+        display: flex;
+        $transition-properties: 0.5s ease-out;
+
+        padding: 12px 15px 12px 21px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        font-size: 1.6rem;
+        font-weight: 500;
+        color: white;
+        background-color: rgba(0, 0, 0, 0);
+        text-transform: uppercase;
+
+        @include vendors(transition, $transition-properties);
+
+        .item-icon, .item-name {
+            opacity: 0.7;
+        }
+
+        .item-name {
+            display: none;
+        }
+
+        .item-icon {
+            $size: 20px;
+            flex: 0 0 auto;
+
+            width: $size; height: $size;
+            margin-right: 10px;
+
+            svg {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+
+            .item-icon, .item-name {
+                opacity: 1;
+            }
+
+            .item-name {
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+.aside-footer {
+    width: 100%;
+    display: flex;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+
+    @include vendors(transition, $opening-transition);
+
+    .profile-info {
+        display: none;
+
+        padding: 10px 5px 12px 20px;
+        color: white;
+        flex: 1 1 auto;
+
+        .logged-as {
+            margin-bottom: 4px;
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .logout-button {
+        justify-content: center;
+        align-items: center;
+        flex: 0 0 62px;
+        background-color: rgba(255, 255, 255, 0.1);
+
+        height: 65px;
+        width: 62px;
+        
+        @include flex;
+        @include vendors(transition, 0.5s ease-out);
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+}
+

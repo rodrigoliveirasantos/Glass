@@ -1,0 +1,206 @@
+@use '../../../../../scss/global/functions.scss' as *;
+
+.app-wrapper {
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    background-color: var(--white);
+}
+
+app-aside,
+app-action-menu {
+    flex: 1 0 auto;
+}
+
+.main-content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    .toolbar {
+        display: flex;
+        width: 100%;
+        padding: 15px 20px 15px 40px;
+
+        border-bottom: 1px solid var(--grey);
+
+        .date {
+            display: flex;
+            align-items: center;
+            margin-right: 48px;
+            @include fit-content;
+
+            > * { flex: 0 0 auto; }
+
+            .date-info {
+                margin-right: 12px;
+                font-family: 'Rubik', 'Poppins', sans-serif;
+                font-size: 2.8rem;
+            }
+
+            .date-menu-icon {
+                $size: 28px;
+                display: inline-block;
+                width: $size; height: $size;
+
+                svg {
+                    width: auto;
+                    height: 100%;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .professional {
+            align-items: center;
+            @include flex;
+            @include fit-content;
+
+            * > { flex: 0 0 auto;}
+
+            .professional-name {
+                margin-right: 16px;
+
+                font-size: 1.8rem;
+                font-weight: 500;
+                max-width: 28ch;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .arrow {
+                padding-top: 3px;
+            }
+        }
+        
+
+        .professional-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            margin-left: auto;
+
+            .info {
+                font-size: 1.2rem;
+                text-align: right;
+
+                margin-right: 9px;
+            }
+
+            .professional-info-icon {
+                $size: 12px;
+                width: 12px; height: 12px;
+            }
+        }
+    }
+}
+
+.calendar-control {
+    display: none;
+    position: absolute;
+
+    width: 240px;
+    height: 163px;
+
+    text-align: center;
+    font-family: 'Rubik', 'Poppins', sans-serif;
+    color: var(--black);
+    
+    @include vendors(filter, drop-shadow(0 1px 10px rgba(0, 0, 0, 0.25))); 
+    z-index: 10;
+    
+    &.active {
+        display: block;
+    }
+
+    .content {
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden;
+        border-radius: 10px;
+        background-color: var(--white);
+
+        flex-direction: column;
+        @include flex;
+    }
+
+    .header {
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--dark-white);
+        
+        justify-content: center;
+        @include flex;
+
+        #year-input {
+            width: 6ch;
+            border: 1px solid var(--dark-white);
+            padding: 0 4px;
+
+            font-size: 1.6rem;
+            text-align: center;
+            background-color: inherit;
+        }
+
+        .year-input-control {
+            height: 100%;
+            margin: 0 8px;
+
+            align-items: center;
+            @include flex;
+        
+            &:hover {
+                cursor: pointer;
+            }
+
+            svg {
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+
+    .body {
+        width: 100%;
+        height: 100%;
+
+        .month-grid {
+            width: 100%;
+            height: 100%;
+
+            display: -moz-grid;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+
+            .month-input {
+                width: 100%;
+                height: 100%;
+                font-size: 1.4rem;
+
+                align-items: center;
+                justify-content: center;
+                text-transform: uppercase;
+                @include vendors(user-select, none);
+                @include flex;
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                &.selected {
+                    background-color: #f0eeee;
+                }
+            }
+        }
+    }
+}

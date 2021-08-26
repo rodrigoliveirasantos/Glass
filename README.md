@@ -1,27 +1,59 @@
 # Glass
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
+O projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
 
-## Development server
+<br/>
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Requisitos:
+<hr/>
 
-## Code scaffolding
+- [Node](https://nodejs.org/en/)
+- [Angular CLI](https://angular.io/cli)
+- [Git](https://git-scm.com/downloads)
+- [.NET v5.0](https://dotnet.microsoft.com/download)
+- [MySQL]()
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+<br />
 
-## Build
+## Instalação:
+1. Com o node e o angular instalado clone esse repositório usando o comando:
+```bash
+> git clone https://github.com/rodrigoliveirasantos/Glass.git
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+<br />
 
-## Running unit tests
+2. Clone o repositório do [backend do Glass](https://github.com/Diogo2550/Glass) em um diretório diferente:
+```bash
+> git clone https://github.com/Diogo2550/Glass.git
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+<br />
 
-## Running end-to-end tests
+3. Atualize as dependencias do frontend:
+```bash
+> cd <diretorio_do_glass_frontend>
+> npm update
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+<br />
 
-## Further help
+4. Abra o Mysql e execute o `Modelo_Fisico.sql` para criar o modelo físico do banco de dados e o `Carga_Inicial.sql` para popular as tabelas.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+<br />
+
+
+## Executando o projeto:
+
+1. Execute o `Glass-Backend/bin/debug/Glass.exe` para iniciar o servidor da API.
+
+<br />
+
+2. Entre no diretório do Glass frontend e use o comando abaixo para iniciar o servidor de desenvolvimento do Angular:
+```bash
+> ng serve
+```
+
+
+
+
