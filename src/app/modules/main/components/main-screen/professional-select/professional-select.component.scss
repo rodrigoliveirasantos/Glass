@@ -1,0 +1,111 @@
+@use '../../../../../../scss/global/functions.scss' as *;
+@use '../../../../../../scss/global/variables.scss' as *;
+
+
+.professional {
+    position: relative;
+    height: 100%;
+    
+    .professional-select {
+        align-items: center;
+        @include flex;
+        @include fit-content;
+        height: 100%;
+        user-select: none;
+
+        cursor: pointer;
+        * > { flex: 0 0 auto;}
+
+        .selected-option {
+            width: 100%;
+
+            margin-right: 8px;
+            width: 24ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            font-size: 1.6rem;
+            font-weight: 500;
+     
+            option {
+                font-family: inherit;
+            }
+
+            /* Retirando a setinha do select no IE */
+            &::-ms-expand {
+                display: none;
+            }
+        }
+
+        .arrow {
+            width: fit-content;
+            height: 12px;
+            padding-top: 3px;
+            transition: 0.1s ease-out;
+
+            &.rotated {
+                transform: rotateX(-0.5turn);
+            }
+
+            svg  {
+                display: block;
+                height: 100%;
+                width: auto;
+            }
+        }
+    }
+
+    .option-list {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 0;
+
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: var(--light-grey) white;
+        
+        background: white;
+        border-radius: 10px;
+        filter: drop-shadow(0px 2px 8px rgba(97, 64, 64, 0.20));
+        list-style: none;
+
+        font-size: 1.25rem;
+        z-index: $indexLvl2;
+
+        .option {
+            user-select: none;
+            padding: 8px 8px;
+            cursor: pointer;
+            transition: 0.3s ease-out background-color;
+
+            & + .option {
+                border-top: 1px solid var(--light-grey);
+            }
+
+            &:hover {
+                background-color: rgb(240, 240, 240);
+            }
+
+            > * {
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .professional-name {
+                font-weight: 500;
+                display: block;
+                
+            }
+
+            .professional-role {
+                color: var(--grey);
+            }
+        }
+    }
+
+}
+

@@ -8,7 +8,7 @@ body {font-family: 'Poppins', sans-serif;}
 /* OVERWRITES */
 picture { display: flex; width: -moz-fit-content; width: fit-content; margin: 0 auto; max-width: 100%; }
 img { display: block; width: 100%; }
-
+button { cursor: pointer; }
 
 /* GERAIS */
 .wh100 { width: 100%; height: 100%; } 
@@ -117,7 +117,9 @@ img { display: block; width: 100%; }
 .no-wrap        { white-space: nowrap; }
 
 input,
-button {
+button,
+select,
+option {
     font-family: 'Poppins', sans-serif;
 }
 
@@ -142,6 +144,15 @@ input[type="password"]{
         text-transform: uppercase;
         opacity: 1;
     }
+}
+
+input:disabled {
+    opacity: 0.75;
+    filter: grayscale(0.3);
+}
+
+.fake-input {
+    @extend input, [type="text"];
 }
 
 .btn {

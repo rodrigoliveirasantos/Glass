@@ -1,4 +1,6 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { CellDataService } from 'src/app/services/cell-data.service';
+import { Appointment, Schedule } from '../../../../../shared/interfaces/types';
 
 
 @Component({
@@ -8,23 +10,87 @@ import { Component, HostListener, OnInit } from '@angular/core';
 })
 export class CalendarCellComponent implements OnInit {
   otherMonth: boolean = false;
-  state: number = 0;
   day: number = 0;
   date!: Date;
-  data!: any;
+  schedule!: Schedule | null;
+  appointments!: Appointment[] | null;
+  full = false;
 
-  constructor() { }
+  active = false;
+
+  constructor(private _cellDataService: CellDataService) { }
 
   ngOnInit(): void {
   }
 
   @HostListener('click')
-  private onClick(){
-    console.log(this.date);
+  public onClick(){
+    const scheduleData = this.getScheduleData();
+    if (!this.otherMonth) this._cellDataService.emit({ date: this.date, appointments: scheduleData });
   }
 
-  public setData(data: any){
-    console.log(data);
-    this.data = data;
+  @Output() focusEvent = new EventEmitter<CalendarCellComponent>();
+  public emitFocusEvent = () =>{
+    if (!this.otherMonth) this.focusEvent.emit(this);
   }
+
+  // Esses setters não são realmente necessários, apenas foram criados 
+  // para tornar mais fácil de identificar que há uma mudança no estado.
+  public setActive(value: boolean){
+    this.active = value;
+  }
+
+  public setSchedule(value: Schedule | null){
+    this.schedule = value;
+  }
+
+  public setAppointments(value: Appointment[] | null){
+    this.appointments = value;
+  }
+
+  public isFull(){
+    if (!this.schedule || !this.appointments) return false;
+    return this.appointments.length === this.schedule.frequency;
+  }
+
+  private getScheduleData(){
+    const scheduleMap = this.createScheduleMap();
+    if (!scheduleMap) return null;
+
+    this.appointments?.forEach(appointment => {
+      const key = appointment.appointmentDate.split('T')[1];
+      if (scheduleMap.has(key)) scheduleMap.set(key, appointment);
+    });
+
+    return scheduleMap;
+  }
+
+  private createScheduleMap() {
+    if (!this.schedule) return false;
+
+    const schedule = this.schedule;
+    const formattedDate = this.date.toISOString().split('T')[0];
+
+    const startTime = Date.parse(`${formattedDate} ${schedule.startTime}`);
+    const endTime = Date.parse(`${formattedDate} ${schedule.endTime}`);
+    const frequency = schedule.frequency - 1;
+
+    const timeInterval = endTime - startTime;
+    const timePerAppointment = timeInterval / frequency;
+    
+    const scheduleTimes = new Map<string, Appointment | null>();
+
+    for (let i = 0; i <= frequency; i++){ 
+      const timeString = (new Date(startTime.valueOf() + timePerAppointment * i)).toLocaleTimeString('pt-BR');
+      scheduleTimes.set(timeString, null);
+    }
+    
+    return scheduleTimes;
+  }
+
+}
+
+interface ScheduleData {
+  date: Date,
+  appointments: Map<string, Appointment>
 }

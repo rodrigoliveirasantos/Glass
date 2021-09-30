@@ -5,58 +5,7 @@
 </div>
 
 <table class="calendar-grid">
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-    </tr>
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-    </tr>
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-    </tr>
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-    </tr>
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-    </tr>
-    <tr class="calendar-row">
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
-        <app-calendar-cell></app-calendar-cell>
+    <tr *ngFor="let r of rows"  class="calendar-row">
+        <app-calendar-cell *ngFor="let c of cols" (focusEvent)="handleClickInCell($event)" ></app-calendar-cell>
     </tr>
 </table>

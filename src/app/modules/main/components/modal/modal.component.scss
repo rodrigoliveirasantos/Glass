@@ -1,0 +1,109 @@
+@keyframes fading-in {
+    from { opacity: 0; }
+    to { opacity: 1; } 
+}
+
+@keyframes fading-out {
+    from { opacity: 1; }
+    to { opacity: 0; } 
+}
+
+@keyframes entering {
+    from { transform: translateY(-45vh); }
+    to { transform: translateY(0); }
+}
+
+@keyframes leaving {
+    from { transform: translateY(0); }
+    to { transform: translateY(45vh); }
+}
+
+$animation-time: 0.5s;
+
+.backdrop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+
+    &.opening, &.closing {
+        overflow: hidden; // Isso impede que a animação do modal cause overflow
+    }
+
+    &.opening {
+        animation: fading-in $animation-time ease;
+
+        .modal {
+            animation: entering $animation-time cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+    }
+
+    &.closing {
+        animation: fading-out $animation-time ease;
+
+        .modal {
+            animation: leaving $animation-time cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+    }
+}
+
+.modal {
+    width: 90%;
+    max-width: 750px;
+    min-width: 280px;
+
+    min-height: 300px;
+
+    background-color: var(--white);
+    border-radius: 10px;
+}
+
+$padding: 20px;
+.modal-header {
+    position: relative;
+    padding: $padding 0;
+
+    text-align: center;
+    font-weight: 500;
+    font-size: 2rem;
+    font-family: 'Rubik';
+}
+
+.close-modal {
+    position: absolute;
+    right: $padding;
+
+    width: fit-content;
+    height: 15px;
+
+    margin-left: auto;
+    background: none;
+
+    &.align-center {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    svg {
+        width: auto;
+        height: 100%;
+        transition: 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+        &:hover {
+            transform: scale(1.1) rotateZ(0.25turn);
+        }
+    }
+}
+
+.modal-body {
+    padding: 20px;
+}

@@ -1,4 +1,4 @@
-<div class="calendar-cell" [ngClass]="{ 'other-day-month': otherMonth }" >
-    <div *ngIf="state > 0" class="day-state-icon"></div>
+<div class="calendar-cell" [ngClass]="{ 'other-day-month': otherMonth, 'active': active, 'full': isFull() }" (click)="emitFocusEvent()" >
+    <div *ngIf="schedule" class="day-state-icon"></div>
     <small class="day"> {{ day }} </small>
 </div>

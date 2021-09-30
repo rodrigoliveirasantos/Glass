@@ -1,0 +1,48 @@
+$transparent-white: rgba(255, 255, 255, 0.75);
+
+.activity-list {
+    margin-bottom: 20px;
+}
+
+.activity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid $transparent-white;
+    color: $transparent-white;
+    fill: $transparent-white;
+
+    font-size: 1.4rem;
+    font-weight: 400;
+
+    &.free {
+        color: var(--white);
+        border-color: $transparent-white;
+        fill: var(--white);
+    }
+}
+
+.activity-info {
+    font-size: 1.6rem;
+    
+    .strong {
+        font-weight: 600;
+    }
+}
+
+.action {
+    width: fit-content;
+    height: 16px;
+    padding-right: 5px;
+    cursor: pointer;
+
+    svg {
+        display: block;
+        width: auto;
+        height: 100%;
+    }
+}
+

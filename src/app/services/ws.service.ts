@@ -27,7 +27,6 @@ export class WSService {
     }
 
     if (this.tries++ === 8){ 
-      
       alert('Houve um erro ao se conectar com o servidor.');
       this._router.navigate(['/']);
       return;

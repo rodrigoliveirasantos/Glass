@@ -1,0 +1,32 @@
+
+<div id="calendar-control" class="calendar-control"  #calendarControl [ngClass]="{ 'active': active }">
+    <div class="content">
+        <div class="header">
+            <div class="year-input-control" (click)="incrementYear(-1)">
+                <svg width="16" height="4" viewBox="0 0 16 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 2H8H14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <input id="year-input" name="year-input" [value]="selectedYear" (change)="formatYearInput($event)" />
+            
+            <div class="year-input-control" (click)="incrementYear()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 8.18182H8M14 8.18182H8M8 8.18182V2V14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="body">
+            <div class="month-grid" #monthGrid>
+                <div 
+                    class="month-input" 
+                    *ngFor="let name of monthNames; index as i"  
+                    [ngClass]="{ 'selected': i === selectedMonth }" 
+                    (click)="setSelectedMonth(i)"
+                >
+                    {{ name.substring(0, 3) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

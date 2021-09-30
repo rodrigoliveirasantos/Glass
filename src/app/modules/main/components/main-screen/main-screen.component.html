@@ -5,7 +5,7 @@
     <div class="main-content">
         <div class="toolbar">
             <div class="date">
-                <div class="date-info"><span id="month">{{ monthNames[selectedMonth] }}</span>, <span id="year">{{ selectedYear }}</span></div>
+                <div class="date-info"><span id="month">{{ selectedMonthName }}</span>, <span id="year">{{ selectedYear }}</span></div>
                 <div id="date-menu-icon" class="date-menu-icon" (click)="onClickOnControl($event)">
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.64307 12.1428H22.1431V14.6428H24.6431V7.14282C24.6431 5.76782 23.5181 4.64282 22.1431 4.64282H20.8931V2.14282H18.3931V4.64282H8.39307V2.14282H5.89307V4.64282H4.64307C3.25557 4.64282 2.15557 5.76782 2.15557 7.14282L2.14307 24.6428C2.14307 26.0178 3.25557 27.1428 4.64307 27.1428H13.3931V24.6428H4.64307V12.1428ZM4.64307 7.14282H22.1431V9.64282H4.64307V7.14282ZM26.9431 19.9928L26.0556 20.8803L23.4056 18.2303L24.2931 17.3428C24.7806 16.8553 25.5681 16.8553 26.0556 17.3428L26.9431 18.2303C27.4306 18.7178 27.4306 19.5053 26.9431 19.9928ZM22.5181 19.1178L25.1681 21.7678L18.5431 28.3928H15.8931V25.7428L22.5181 19.1178Z" fill="#3F3791"/>
@@ -13,18 +13,11 @@
                 </div>
             </div>
 
-            <div class="professional">
-                <div class="professional-name">Ketlin da Silva Souza Santos</div>
-                <div class="arrow">
-                    <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L8.5 9.68421L16 1" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            </div>
+            <app-professional-select></app-professional-select>
 
             <div class="professional-info">
                 <div class="professional-rotation">
-                    <span class="info" id="rotation">Segunda, Quarta e Sexta</span>
+                    <span class="info" id="rotation">{{ professionalWorkdays }}</span>
                     <span class="professional-info-icon">
                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.5 2V5H9.5" stroke="#282828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -35,7 +28,7 @@
                 </div>
 
                 <div class="professional-role">
-                    <span class="info" id="role">Endocrinologista</span>
+                    <span class="info" id="role">{{ 'Não recebido' }}</span>
                     <span class="professional-info-icon">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 10.5V9.5C10 8.96957 9.78929 8.46086 9.41421 8.08579C9.03914 7.71071 8.53043 7.5 8 7.5H4C3.46957 7.5 2.96086 7.71071 2.58579 8.08579C2.21071 8.46086 2 8.96957 2 9.5V10.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -46,40 +39,15 @@
             </div>
         </div>
 
-        <div id="calendar-control" class="calendar-control" #calendarControl>
-            <div class="content">
-                <div class="header">
-                    <div class="year-input-control" (click)="incrementYear(-1)">
-                        <svg width="16" height="4" viewBox="0 0 16 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 2H8H14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    
-                    <input id="year-input" name="year-input" [value]="selectedYear" (change)="formatYearInput($event)" />
-                    
-                    <div class="year-input-control" (click)="incrementYear()">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 8.18182H8M14 8.18182H8M8 8.18182V2V14" stroke="#282828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="body">
-                    <div class="month-grid" #monthGrid>
-                        <div 
-                            class="month-input" 
-                            *ngFor="let name of monthNames; index as i"  
-                            [ngClass]="{ 'selected': i === selectedMonth }" 
-                            (click)="onClickMonthNode(i)"
-                        >
-                            {{ name.substring(0, 3) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <app-calendar-control></app-calendar-control>
         <app-calendar [selectedYear]="selectedYear" [selectedMonth]="selectedMonth"></app-calendar>
     </div>
-
+    
     <app-action-menu></app-action-menu>
+
+    <app-modal id="appointment-creation" [content-template]="content" modal-title="Adicionando consulta">
+        <ng-template #content let-data>
+            <app-appointment-creation-form [data]="data"></app-appointment-creation-form>
+        </ng-template>
+    </app-modal>
 </div>

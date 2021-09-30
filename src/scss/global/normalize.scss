@@ -1,6 +1,12 @@
 @use './variables.scss' as *;
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
 
 ::-webkit-scrollbar {
     width: 8px;
@@ -17,6 +23,9 @@ html {
     font-size: 62.5%;
     height: 100%;
     width: 100%;
+}
+
+* {
     scrollbar-color: var(--blue) var(--white);
     scrollbar-width: thin;
 }

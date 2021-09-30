@@ -16,10 +16,31 @@
     height: 100%;
 
     color: var(--light-grey);
+    user-select: none;
+
+    &:not(.other-day-month) {
+        cursor: pointer;
+    }
 
     &.other-day-month {
         @include vendors(filter, grayscale(0.85));
         background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    &.active {
+        outline: 2px solid var(--blue);
+        border-color: var(--blue);
+        filter: brightness(1.03);
+
+        .day {
+            color: var(--blue);
+            font-weight: 600;
+        }
+    }
+
+
+    &.full .day-state-icon {
+        background-color: var(--red);
     }
 
     .day-state-icon {

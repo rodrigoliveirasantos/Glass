@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketResponse, WebsocketMessageHandler, GetAllMessageBody } from '../shared/interfaces/types';
+import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody } from '../shared/interfaces/types';
 import { WSService } from './ws.service';
 
 
@@ -15,6 +15,7 @@ export class ProfessionalDataService {
   private methods: ProfessionalDataServiceMethod = {
     GET_ALL: [],
     OPEN: [],
+    ADD_APPOINTMENT: [],
   };
 
   // Guarda todas as requisições que foram feitas enquanto o Websocket se conectava.
@@ -27,12 +28,18 @@ export class ProfessionalDataService {
 
       this.ws.addEventListener('message', ({ data }) => {
         data = JSON.parse(data);
+        if (!data.success){
+          throw Error(data.error + ' ' + data.code);
+        }
+
         this.sendToHandlers(data.method, data);
       });
 
       this.requestQueue.forEach(requestedMethod => {
         this.send(requestedMethod.name, requestedMethod.message);
       });
+
+      this.requestQueue = [];
     })
     
   }
@@ -41,7 +48,7 @@ export class ProfessionalDataService {
   public sendToHandlers(methodName: string, data: WebsocketResponse): void {
     const methodHandlers = this.getMethodHandlers(methodName);
     methodHandlers.forEach(({ handler, context }) => {  
-      context ?  handler.apply(context, [ data, this ]) : handler(data, this);
+      context ?  handler.apply(context, [data, this]) : handler(data, this);
     });
   }
 
@@ -74,12 +81,16 @@ export class ProfessionalDataService {
   }
 
   // Manda a mensagem com método GET_ALL
-  public getAll(body: GetAllMessageBody){
+  public getAll(body: GetAllRequestBody){
     this.send('GET_ALL', body);
   }
 
+  public addAppointment(body: AddAppointmentRequestBody){
+    this.send('ADD_APPOINTMENT', body);
+  } 
 
   private getMethodHandlers(methodName: string){
+    console.log(methodName)
     const method = this.methods[methodName];
     if (!method) {
         // throw new Error(`Método: ${name} não existe.`);

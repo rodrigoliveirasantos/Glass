@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, QueryList,  ViewChildren } from '@angular/core';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
-import { GetAllMessageBody, WebsocketResponse } from 'src/app/shared/interfaces/types';
+import { GetAllMessageData, GetAllRequestBody, WebsocketResponse } from 'src/app/shared/interfaces/types';
+import { Schedule, Appointment } from '../../../../shared/interfaces/types';
 import { CalendarCellComponent } from './calendar-cell/calendar-cell.component';
 
 @Component({
@@ -12,10 +13,12 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
   readonly today = new Date(Date.now());
   readonly abreviations = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   readonly daysOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  readonly rows = Array(6);
+  readonly cols = Array(7);
 
+  private currentActiveCell: CalendarCellComponent | undefined;
   @Input() selectedYear!: number;
   @Input() selectedMonth!: number;
-
 
   @ViewChildren(CalendarCellComponent) cells!: QueryList<CalendarCellComponent>; 
 
@@ -31,7 +34,11 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    if (this.cells) this.loadCalendarFromMonth(this.selectedMonth, this.selectedYear);
+    if (this.cells) { 
+      this.loadCalendarFromMonth(this.selectedMonth, this.selectedYear);
+      this.currentActiveCell?.setActive(false);
+      this.currentActiveCell = undefined;
+    };
   }
 
   private getDaysOfMonth(month: number, year: number = this.today.getFullYear()): number {
@@ -76,15 +83,15 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
     let cellMonth = month;
     
     // Reduz o ano em 1 quando o mês anterior ao escolhido for o primeiro do ano.
-    if (firstWeekDayOfMonth > 0 && --cellMonth < 0){ year-- };
+    if (firstWeekDayOfMonth > 0 && --cellMonth < 0){ year--; cellMonth = 11; };
 
-    let monthMaxDays = this.getDaysOfMonth(cellMonth);
+    let monthMaxDays = this.getDaysOfMonth(cellMonth, year);
     let cellValue = firstWeekDayOfMonth > 0 ? monthMaxDays - (firstWeekDayOfMonth - 1) : 1;
     
     for (let cell of this.cells){
       if (cellValue > monthMaxDays){
-        if (++cellMonth > 11){ year++ }
 
+        if (++cellMonth > 11){ year++; cellMonth = 0; }
         monthMaxDays = this.getDaysOfMonth(cellMonth, year);
         cellValue = 1;
       }
@@ -96,7 +103,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
       cellValue++
     }
 
-    const body: GetAllMessageBody = {
+    const body: GetAllRequestBody = {
       employeeId: 3,
       month: this.selectedMonth + 1,
       year: this.selectedYear
@@ -106,7 +113,6 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
   }
 
   
-
   private getCellByDay(dayNumber: number): CalendarCellComponent | -1 {
     if (dayNumber > this.getDaysOfMonth(this.selectedMonth) || dayNumber < 1){
       console.warn('Numero da célula deve estar entre 1 e o número de dias do mês selecionado');
@@ -118,11 +124,43 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
   }
 
   private handleCalendarData(message: WebsocketResponse, listener: ProfessionalDataService){
-    const daysOfWeek = message.data!.schedules.map((s: any) => s.dayOfWeek);
-    console.log(message)
+    const schedules = new Map<number, Schedule>();
+    const data = message.data! as GetAllMessageData;
+    data.schedules.forEach((s: Schedule) => schedules.set(s.dayOfWeek, s));
+
     this.cells.forEach(cell => {
-        cell.state = !cell.otherMonth && daysOfWeek.includes(cell.date.getDay()) ? 1 : 0;
+      const daySchedule = !cell.otherMonth && schedules.has(cell.date.getDay()) ? schedules.get(cell.date.getDay())! : null;
+      cell.setSchedule(daySchedule);
     });
+
+    // Armazenando todos as consultas do mesmo dia em um array e guardado no HashMap
+    const appointmentsByDay = new Map<number, Appointment[]>();
+    data.appointments.forEach(appointment => {
+      const appointmentDate = (new Date(appointment.appointmentDate)).getDate();
+
+      if (!appointmentsByDay.has(appointmentDate)){
+        appointmentsByDay.set(appointmentDate,[ appointment ]);
+      } else {
+        appointmentsByDay.get(appointmentDate)!.push(appointment);
+      }
+    });
+
+    console.log(appointmentsByDay);
+
+    appointmentsByDay.forEach((appointments, date) => {
+      const cell = this.getCellByDay(date);
+      if (cell === -1) {
+        return console.warn(`Célula do calendário com a data: ${date} não foi achada.`);
+      }
+
+      cell.setAppointments(appointments);
+    });
+  }
+
+  public handleClickInCell(activeCell: CalendarCellComponent){    
+    this.currentActiveCell?.setActive(false);
+    this.currentActiveCell = activeCell;
+    activeCell.setActive(true);
   }
 
 }
