@@ -5,7 +5,6 @@ O projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) v
 <br/>
 
 ## Requisitos:
-<hr/>
 
 - [Node](https://nodejs.org/en/)
 - [Angular CLI](https://angular.io/cli)
@@ -35,10 +34,13 @@ O projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) v
 > cd <diretorio_do_glass_frontend>
 > npm update
 ```
+<br />
+
+4. No arquivo `Glass-Backend/config.json`, altere os campos `user e password` do `database` para os valores de usuário e senha do seu servidor SQL. (Normalmente o usuário é root e a senha é root também)
 
 <br />
 
-4. Abra o Mysql e execute o `Modelo_Fisico.sql` para criar o modelo físico do banco de dados e o `Carga_Inicial.sql` para popular as tabelas.
+5. Abra o Mysql e execute o `Modelo_Fisico.sql` para criar o modelo físico do banco de dados e o `Carga_Inicial.sql` para popular as tabelas.
 
 <br />
 
