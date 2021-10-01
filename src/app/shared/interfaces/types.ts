@@ -7,6 +7,13 @@ export interface WebsocketResponse {
     data?: any
 }
 
+export interface GlassHttpResponse {
+    code: number,
+    success: boolean,
+    error?: string,
+    data?: any
+}
+
 export interface GetAllRequestBody {
     employeeId: number,
     month: number,
@@ -90,4 +97,3 @@ export interface ActivityListInput {
     appointments: [string, Appointment | null][] | undefined // Se isso nao for um array nao funciona
     date: Date
 }
-  
