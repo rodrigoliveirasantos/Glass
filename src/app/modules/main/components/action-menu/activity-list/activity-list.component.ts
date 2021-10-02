@@ -26,7 +26,6 @@ export class ActivityListComponent implements OnInit, OnChanges {
   sendToModal = (time: string) => {
     const dateString = this.date.toISOString().slice(0, 10); // Pega somente a parte da data
     const date = new Date(`${dateString}T${time}`);
-    console.log(`${dateString}T${time}`);
     this._modalService.open('appointment-creation', { date: date });
   }
 }

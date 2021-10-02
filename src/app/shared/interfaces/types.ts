@@ -1,6 +1,7 @@
 import { ProfessionalDataService } from "src/app/services/professional-data.service";
 
 export interface WebsocketResponse {
+    method: string,
     code: number,
     success: boolean,
     error?: string,
@@ -19,7 +20,7 @@ export interface AddAppointmentRequestBody {
     professionalId: number;
     patientId: number;
     appointment: {
-        appointmentType: number,
+        appointmentType: string,
         appointmentDate: string
     }
     componentId?: string;

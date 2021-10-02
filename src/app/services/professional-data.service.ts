@@ -10,7 +10,7 @@ import { WSService } from './ws.service';
 })
 export class ProfessionalDataService {
   private ws!: WebSocket;
-
+  private readonly errorMethodSuffix = 'ERROR';
   // Guarda os handlers registrados para os eventos.
   private methods: ProfessionalDataServiceMethod = {
     GET_ALL: [],
@@ -22,6 +22,11 @@ export class ProfessionalDataService {
   private requestQueue: RequestedMethod[] = [];
 
   constructor(private _WSService: WSService) { 
+    // Adiciona os métodos de erro no objeto de métodos
+    Object.keys(this.methods).forEach((key) => {
+      this.methods[key + '_' + this.errorMethodSuffix] = [];
+    });
+
     // Se conecta com o Websocket e faz todas as requisições agendadas.
     this._WSService.wsObserver.subscribe((ws: WebSocket) => {
       this.ws = ws;
@@ -90,7 +95,7 @@ export class ProfessionalDataService {
   } 
 
   private getMethodHandlers(methodName: string){
-    console.log(methodName)
+    
     const method = this.methods[methodName];
     if (!method) {
         // throw new Error(`Método: ${name} não existe.`);

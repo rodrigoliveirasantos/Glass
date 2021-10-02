@@ -2,6 +2,7 @@
 <div class="app-wrapper">
     <app-aside></app-aside>
     
+    <!-- Todo: Transformar o main-content em um componente que alterna entre as telas do app -->
     <div class="main-content">
         <div class="toolbar">
             <div class="date">
@@ -48,6 +49,12 @@
     <app-modal id="appointment-creation" [content-template]="content" modal-title="Adicionando consulta">
         <ng-template #content let-data>
             <app-appointment-creation-form [data]="data"></app-appointment-creation-form>
+        </ng-template>
+    </app-modal>
+
+    <app-modal id="operation-success" [content-template]="operationSuccessContent" modal-title="Sucesso!">
+        <ng-template #operationSuccessContent let-data>
+            <app-success-modal [data]="data"></app-success-modal>
         </ng-template>
     </app-modal>
 </div>

@@ -3,6 +3,7 @@ import { Input } from '@angular/core';
 import { ProfessionalControlService } from 'src/app/services/professional-control.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
   selector: 'app-appointment-creation-form',
@@ -17,6 +18,7 @@ export class AppointmentCreationFormComponent implements OnInit {
   professionalId: number | null = null;
   onlyLettersRegex = '[a-zA-Zà-úÀ-Ú ]*';
   waitingResponse = false;
+  timeoutId = 0;
 
   controls = {
     roomId: new FormControl('', Validators.required),
@@ -26,9 +28,21 @@ export class AppointmentCreationFormComponent implements OnInit {
 
   form = new FormGroup(this.controls);
   
-  constructor(private _profissionalControlService: ProfessionalControlService, private _professionalDataService: ProfessionalDataService) {
-    this._professionalDataService.on('ADD_APPOINTMENT' , () => {
-      this.form.enable();
+  constructor(private _profissionalControlService: ProfessionalControlService, private _professionalDataService: ProfessionalDataService, private _modalService: ModalService) {
+    this._professionalDataService.on('ADD_APPOINTMENT' , (response) => {
+      window.clearTimeout(this.timeoutId);
+      this.stopWaiting();
+
+      this._modalService.closeAll();
+      this._modalService.success('A criação da consulta foi um sucesso!');
+    });
+
+    this._professionalDataService.on('ADD_APPOINTMENT_ERROR', (response) => {
+      window.clearTimeout(this.timeoutId);
+      this.stopWaiting();
+      alert('Houve um erro ao criar a consulta.');
+
+      console.log('Response erro: ', response)
     });
   }
 
@@ -41,6 +55,8 @@ export class AppointmentCreationFormComponent implements OnInit {
   }
 
   onSubmit = () => {
+    if (this.waitingResponse) return;
+    
     const formData = {} as FormData;
     Object.entries(this.controls).forEach(entry => {
       formData[entry[0]] = entry[1].value
@@ -51,12 +67,32 @@ export class AppointmentCreationFormComponent implements OnInit {
       patientId: 1,
       professionalId: this.professionalId!,
       appointment: {
-        appointmentType: 0,
-        appointmentDate: this.data.appointmentDate,
+        appointmentType: 'Default',
+        appointmentDate: this.brazilianDateToJson(this.date),
       }
     });
 
+    this.waitResponse();
+    // Cria um timeout para caso uma resposta não seja enviada
+    this.timeoutId = window.setTimeout(this.stopWaiting, 12000);
+  }
+
+  /** Converte uma data com fuso horário brasileiro para o formato JSON */
+  private brazilianDateToJson(date: Date){
+    const [dateString, timeString] = date.toLocaleString('pt-BR').split(' ');
+    const [day, month, year] = dateString.split('/');
+
+    return `${year}-${month}-${day}T${timeString}`;
+  }
+
+  private stopWaiting = () => {
+    this.form.enable();
+    this.waitingResponse = false;
+  }
+
+  private waitResponse = () => {
     this.form.disable();
+    this.waitingResponse = true;
   }
 }
 

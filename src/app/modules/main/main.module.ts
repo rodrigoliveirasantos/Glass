@@ -14,6 +14,7 @@ import { AppointmentCreationFormComponent } from './components/main-screen/appoi
 import { ModalComponent } from './components/modal/modal.component';
 import { CalendarControlComponent } from './components/main-screen/calendar-control/calendar-control.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SuccessModalComponent } from './components/modal/success-modal/success-modal.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppointmentCreationFormComponent,
     ModalComponent,
     CalendarControlComponent,
+    SuccessModalComponent,
   ],
   imports: [
     CommonModule,

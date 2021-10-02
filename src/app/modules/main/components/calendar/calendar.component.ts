@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, QueryList,  ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, QueryList,  ViewChildren, OnInit } from '@angular/core';
+import { ModalService } from 'src/app/services/modal.service';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { GetAllMessageData, GetAllRequestBody, WebsocketResponse } from 'src/app/shared/interfaces/types';
 import { Schedule, Appointment } from '../../../../shared/interfaces/types';
@@ -9,7 +10,7 @@ import { CalendarCellComponent } from './calendar-cell/calendar-cell.component';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements AfterViewInit, OnChanges {
+export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
   readonly today = new Date(Date.now());
   readonly abreviations = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   readonly daysOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -22,8 +23,27 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
 
   @ViewChildren(CalendarCellComponent) cells!: QueryList<CalendarCellComponent>; 
 
-  constructor(private changeDetector: ChangeDetectorRef, private _professionalDataService: ProfessionalDataService) {
+  constructor(private changeDetector: ChangeDetectorRef, private _professionalDataService: ProfessionalDataService, private _modalService: ModalService) {
+    // Atua
     this._professionalDataService.on('GET_ALL', this.handleCalendarData, this);
+    // Quando uma consulta é feita, atualiza o calendário para os usuários que estão vendo
+    this._professionalDataService.on('ADD_APPOINTMENT', (message) => {
+        const { appointment } = message.data;
+        const appointmentDate = new Date(appointment.appointmentDate);
+
+        if (appointmentDate.getMonth() !== this.selectedMonth) return;    
+      
+        const cell = this.getCellByDay(appointmentDate.getDate());
+        if (cell === -1){
+          return alert('Houve um problema em atualizar o calendário. Célula com o dia não foi encontrada');
+        }
+
+        // As células que nao tem nenhuma consulta, não recebem o valor do appointment por questões de otimização no algorítmo
+        // de preenchimento do calendário.
+        // Nesse caso é criado um array.
+        cell.appointments ? cell.appointments.push(appointment) : cell.appointments = [ appointment ];
+        cell.emitData(); // Emite os novos dados para o menu lateral
+    });
   }
 
   ngAfterViewInit(): void {
@@ -39,6 +59,10 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
       this.currentActiveCell?.setActive(false);
       this.currentActiveCell = undefined;
     };
+  }
+
+  ngOnInit(){
+    
   }
 
   private getDaysOfMonth(month: number, year: number = this.today.getFullYear()): number {
@@ -144,8 +168,6 @@ export class CalendarComponent implements AfterViewInit, OnChanges {
         appointmentsByDay.get(appointmentDate)!.push(appointment);
       }
     });
-
-    console.log(appointmentsByDay);
 
     appointmentsByDay.forEach((appointments, date) => {
       const cell = this.getCellByDay(date);

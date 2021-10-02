@@ -10,7 +10,6 @@ import { WSService } from 'src/app/services/ws.service';
 export class LoadingScreenComponent implements OnInit {
  
   constructor(private _WSService: WSService, private _router: Router, private _route: ActivatedRoute) {
-    console.log('Loading');
     if (!this._WSService.ready){
 
       this._WSService.wsObserver.subscribe(() => {
