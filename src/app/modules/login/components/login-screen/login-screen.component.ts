@@ -8,10 +8,19 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginScreenComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
-    
+  async ngOnInit() {
+    if(this.authService.isLogged()) {
+      console.log('Usuário já está logado XD');
+    } else {
+      let login = await this.authService.login('11111111111','12345678');
+      if(login) {
+        console.log('logado :D')
+      } else {
+        console.log('não logado D:')
+      }
+    }
   }
 
 }
