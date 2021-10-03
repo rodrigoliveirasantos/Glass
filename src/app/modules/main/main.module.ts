@@ -15,6 +15,7 @@ import { ModalComponent } from './components/modal/modal.component';
 import { CalendarControlComponent } from './components/main-screen/calendar-control/calendar-control.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SuccessModalComponent } from './components/modal/success-modal/success-modal.component';
+import { ConfirmationModalComponent } from './components/modal/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { SuccessModalComponent } from './components/modal/success-modal/success-
     ModalComponent,
     CalendarControlComponent,
     SuccessModalComponent,
+    ConfirmationModalComponent,
   ],
   imports: [
     CommonModule,

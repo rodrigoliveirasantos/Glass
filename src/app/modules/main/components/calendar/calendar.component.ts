@@ -50,6 +50,14 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
     this.loadCalendarFromMonth(this.selectedMonth, this.selectedYear);
     // Força uma detecção de mudanças para o Angular captar todas as mudanças no CalendarCell causadas pelo
     // script do calendário.
+    this._modalService.confirmation({
+      message: '<b>rogrido lol</b>',
+      onConfirm: (close: Function) => {
+        console.log('lmao');
+        close();
+      }
+    });
+
     this.changeDetector.detectChanges();
   }
 

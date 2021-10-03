@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalComponent } from '../modules/main/components/modal/modal.component';
+import { ConfirmationModalData } from 'src/app/shared/interfaces/types';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class ModalService {
   private modals: Modals = {}
 
   constructor() { 
-    console.log(this.modals);
+   
   }
 
   private exists(id: string){
@@ -56,8 +57,17 @@ export class ModalService {
     Object.values(this.modals).forEach(modal => modal.close());
   }
 
+
+  /* Métodos para abrir modais específicos */
+
+  /* Abre o modal de sucesso da operação com uma mensagem */
   public success(message: string = ''){
-    this.modals['operation-success'].open({ message });
+    this.open('operation-success', { message });
+  }
+
+  /* Abre o modal de confirmação de ação. Recebe um método para rodar quando a ação for confirmada */
+  public confirmation(data: ConfirmationModalData){
+    this.open('confirmation', data);
   }
 }
 

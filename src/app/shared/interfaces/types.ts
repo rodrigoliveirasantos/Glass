@@ -98,3 +98,10 @@ export interface ActivityListInput {
     appointments: [string, Appointment | null][] | undefined // Se isso nao for um array nao funciona
     date: Date
 }
+
+
+export interface ConfirmationModalData {
+    message: string,
+    onConfirm: Function,
+  }
+  
