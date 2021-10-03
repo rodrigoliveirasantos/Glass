@@ -1,12 +1,16 @@
 @use '../../../../../scss/global/functions.scss' as *;
 @use '../../../../../scss/global/variables.scss' as *;
 
-.app-wrapper {
-    width: 100%;
-    height: auto;
+:host {
+  width: 100%;
+}
 
-    display: flex;
-    background-color: var(--white);
+.app-wrapper {
+  width: 100%;
+  height: auto;
+
+  display: flex;
+  background-color: var(--white);
 }
 
 app-aside,
@@ -58,7 +62,7 @@ app-action-menu {
             }
         }
 
-        
+
         .professional-info {
             display: flex;
             flex-direction: column;
@@ -91,10 +95,10 @@ app-action-menu {
     text-align: center;
     font-family: 'Rubik', 'Poppins', sans-serif;
     color: var(--black);
-    
-    @include vendors(filter, drop-shadow(0 1px 10px rgba(0, 0, 0, 0.25))); 
+
+    @include vendors(filter, drop-shadow(0 1px 10px rgba(0, 0, 0, 0.25)));
     z-index: 10;
-    
+
     &.active {
         display: block;
     }
@@ -115,7 +119,7 @@ app-action-menu {
         width: 100%;
         padding: 8px 0;
         border-bottom: 1px solid var(--dark-white);
-        
+
         justify-content: center;
         @include flex;
 
@@ -135,7 +139,7 @@ app-action-menu {
 
             align-items: center;
             @include flex;
-        
+
             &:hover {
                 cursor: pointer;
             }

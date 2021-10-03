@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ModalComponent } from '../modules/main/components/modal/modal.component';
+import { ModalComponent } from '../modules/shareds/components/modal/modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class ModalService {
       return console.warn(`Modal com id '${modal.id}' duplicado.`);
     }
 
-    this.modals[modal.id] = modal; 
+    this.modals[modal.id] = modal;
   }
 
   public remove(id: string){

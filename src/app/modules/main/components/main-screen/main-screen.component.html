@@ -1,7 +1,5 @@
 
 <div class="app-wrapper">
-    <app-aside></app-aside>
-    
     <div class="main-content">
         <div class="toolbar">
             <div class="date">
@@ -42,7 +40,7 @@
         <app-calendar-control></app-calendar-control>
         <app-calendar [selectedYear]="selectedYear" [selectedMonth]="selectedMonth"></app-calendar>
     </div>
-    
+
     <app-action-menu></app-action-menu>
 
     <app-modal id="appointment-creation" [content-template]="content" modal-title="Adicionando consulta">
