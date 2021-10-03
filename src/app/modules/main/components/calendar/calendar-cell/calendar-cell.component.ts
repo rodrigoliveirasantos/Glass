@@ -24,15 +24,17 @@ export class CalendarCellComponent implements OnInit {
   }
 
   @HostListener('click')
-  public onClick(){
+  public emitData(){
     const scheduleData = this.getScheduleData();
-    if (!this.otherMonth) this._cellDataService.emit({ date: this.date, appointments: scheduleData });
+    this._cellDataService.emit({ date: this.date, appointments: scheduleData })
   }
 
   @Output() focusEvent = new EventEmitter<CalendarCellComponent>();
   public emitFocusEvent = () =>{
     if (!this.otherMonth) this.focusEvent.emit(this);
   }
+
+  
 
   // Esses setters não são realmente necessários, apenas foram criados 
   // para tornar mais fácil de identificar que há uma mudança no estado.

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ModalComponent } from '../modules/shareds/components/modal/modal.component';
+import { ConfirmationModalData } from 'src/app/shared/interfaces/types';
+import { ModalComponent } from '../modules/shared/components/modal/modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,9 @@ import { ModalComponent } from '../modules/shareds/components/modal/modal.compon
 export class ModalService {
   private modals: Modals = {}
 
-  constructor() { }
+  constructor() {
+
+  }
 
   private exists(id: string){
     return Boolean(this.modals[id]);
@@ -23,6 +26,7 @@ export class ModalService {
 
   public remove(id: string){
     const filteredModals: Modals = {};
+    if (id === 'operation-success') return;
 
     for (let [key, modal] of Object.entries(this.modals)){
       if (key !== id) filteredModals[key] = modal;
@@ -38,6 +42,32 @@ export class ModalService {
     }
 
     modal.open(data);
+  }
+
+  public close(id: string){
+    const modal = this.modals[id];
+    if (!modal){
+      throw Error(`Erro ao fechar modal com id: '${id}' pois não existe.`);
+    }
+
+    modal.close();
+  }
+
+  public closeAll(){
+    Object.values(this.modals).forEach(modal => modal.close());
+  }
+
+
+  /* Métodos para abrir modais específicos */
+
+  /* Abre o modal de sucesso da operação com uma mensagem */
+  public success(message: string = ''){
+    this.open('operation-success', { message });
+  }
+
+  /* Abre o modal de confirmação de ação. Recebe um método para rodar quando a ação for confirmada */
+  public confirmation(data: ConfirmationModalData){
+    this.open('confirmation', data);
   }
 }
 

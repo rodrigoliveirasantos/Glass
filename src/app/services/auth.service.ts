@@ -1,31 +1,20 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { GlassHttpResponse } from '../shared/interfaces/types';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly url = `${environment.url_api}user/`;
   private readonly tokenFieldName = 'user_token';
-  private headers: HttpHeaders;
-
-  constructor(private http: HttpClient) {
-    this.headers = new HttpHeaders({
-      'Content-Type': 'text/plain;charset=UTF-8',
-    });
-  }
+  constructor(private _http: HttpService) { }
 
   public async login(cpf: string, password: string): Promise<boolean> {
     const body = { cpf, password };
-    const response: GlassHttpResponse = await this.http.post<GlassHttpResponse>(`${this.url}login`, body, {
-      	headers: this.headers
-    }).toPromise();
-
-    if(response.success) {
-      this.setToken(response.data.token);
+    const data = await this._http.post(`user/login`, { body: body })
+  
+    if(data.success) {
+      this.setToken(data.data.token);
       return true;
     }
     return false;
@@ -41,10 +30,10 @@ export class AuthService {
   }
 
   /** Pode ser usado para obter alguma informações de dentro do token 😡.
-   * Dentro do token você terá as opções: email, name, id
+   * Dentro do token você terá as opções: cpf, name, id
    * @return string|undefined string a chave exista, null caso a chave seja inválida.
    */
-  public getTokenData(key: string): string {
+  public getTokenData(key: ValidKeys): string {
     let token = this.getToken();
     if(!token) {
       return 'Token inexistente';
@@ -56,12 +45,22 @@ export class AuthService {
     return data;
   }
 
+  public getSession(){
+    return {
+      cpf: this.getTokenData('id'),
+      isAdmin: this.getTokenData('isAdmin'),
+      name: this.getTokenData('name'),
+    }
+  }
+
   private setToken(token: string) {
     localStorage.setItem(this.tokenFieldName, token);
   }
 
-  private getToken() {
+  public getToken() {
     return localStorage.getItem(this.tokenFieldName);
   }
 
 }
+
+type ValidKeys = 'isAdmin' | 'name' | 'id'

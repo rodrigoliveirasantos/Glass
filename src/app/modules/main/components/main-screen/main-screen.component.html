@@ -48,4 +48,16 @@
             <app-appointment-creation-form [data]="data"></app-appointment-creation-form>
         </ng-template>
     </app-modal>
+
+    <app-modal id="operation-success" [content-template]="operationSuccessContent" modal-title="Sucesso!">
+        <ng-template #operationSuccessContent let-data>
+            <app-success-modal [data]="data"></app-success-modal>
+        </ng-template>
+    </app-modal>
+
+    <app-modal id="confirmation" [content-template]="confirmationModalContent" modal-title="Confirmar ação">
+        <ng-template #confirmationModalContent let-data>
+            <app-confirmation-modal [data]="data"></app-confirmation-modal>
+        </ng-template>
+    </app-modal>
 </div>

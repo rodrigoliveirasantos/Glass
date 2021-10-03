@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody } from '../shared/interfaces/types';
+import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody } from '../shared/interfaces/types';
+import { AuthService } from './auth.service';
+import { HttpService } from './http.service';
 import { WSService } from './ws.service';
 
 
@@ -10,24 +12,32 @@ import { WSService } from './ws.service';
 })
 export class ProfessionalDataService {
   private ws!: WebSocket;
-
+  private readonly errorMethodSuffix = 'ERROR';
   // Guarda os handlers registrados para os eventos.
   private methods: ProfessionalDataServiceMethod = {
     GET_ALL: [],
     OPEN: [],
     ADD_APPOINTMENT: [],
+    DELETE_APPOINTMENT: [],
   };
 
   // Guarda todas as requisições que foram feitas enquanto o Websocket se conectava.
   private requestQueue: RequestedMethod[] = [];
 
-  constructor(private _WSService: WSService) { 
+  constructor(private _WSService: WSService, private _httpService: HttpService, private _authService: AuthService) { 
+    // Adiciona os métodos de erro no objeto de métodos
+    Object.keys(this.methods).forEach((key) => {
+      this.methods[key + '_' + this.errorMethodSuffix] = [];
+    });
+
     // Se conecta com o Websocket e faz todas as requisições agendadas.
     this._WSService.wsObserver.subscribe((ws: WebSocket) => {
       this.ws = ws;
 
       this.ws.addEventListener('message', ({ data }) => {
         data = JSON.parse(data);
+        console.log(data);
+
         if (!data.success){
           throw Error(data.error + ' ' + data.code);
         }
@@ -70,7 +80,7 @@ export class ProfessionalDataService {
   }
 
   private send(method: string, message: any){
-    const stringfiedMessage = JSON.stringify({ method, ...message });
+    const stringfiedMessage = JSON.stringify({ method, ...message, token: this._authService.getToken() });
 
     if (!this._WSService.ready){
       this.requestQueue.push({ message, name: method });
@@ -85,12 +95,18 @@ export class ProfessionalDataService {
     this.send('GET_ALL', body);
   }
 
-  public addAppointment(body: AddAppointmentRequestBody){
-    this.send('ADD_APPOINTMENT', body);
+  public async addAppointment(body: AddAppointmentRequestBody){
+    const response = await this._httpService.post('appointment/make', { body });
+    return response;
+  } 
+
+  public async deleteAppointment(body: DeleteAppointmentRequestBody){
+    const response = await this._httpService.post('appointment/cancel', { body });
+    return response;
   } 
 
   private getMethodHandlers(methodName: string){
-    console.log(methodName)
+    
     const method = this.methods[methodName];
     if (!method) {
         // throw new Error(`Método: ${name} não existe.`);

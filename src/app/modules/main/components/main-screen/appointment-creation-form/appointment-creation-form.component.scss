@@ -19,9 +19,7 @@
     }
 }
 
-label {
-    font-size: 1.3rem;
-}
+
 
 .infos {
     margin-bottom: 40px;
@@ -36,14 +34,6 @@ label {
     font-size: 1.6rem;
 }
 
-input.ng-touched.ng-invalid {
-    border-color: var(--red);
-
-    &:focus {
-        outline-color: var(--red);
-    }
-}
-
 .submit-btn {
     width: 100%;
     max-width: 300px;
@@ -51,14 +41,6 @@ input.ng-touched.ng-invalid {
     font-size: 2rem;
 
     transition: 0.5s ease;
-}
-
-.form-error {
-    display: block;
-
-    font-size: 1rem;
-    color: var(--red);
-    margin-top: 4px;
 }
 
 select {

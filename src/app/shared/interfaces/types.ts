@@ -1,6 +1,7 @@
 import { ProfessionalDataService } from "src/app/services/professional-data.service";
 
 export interface WebsocketResponse {
+    method: string,
     code: number,
     success: boolean,
     error?: string,
@@ -21,16 +22,23 @@ export interface GetAllRequestBody {
 }
 
 export interface AddAppointmentRequestBody {
-    token?: string
+    token: string | null
     roomId: number
     professionalId: number;
     patientId: number;
     appointment: {
-        appointmentType: number,
+        appointmentType: string,
         appointmentDate: string
     }
     componentId?: string;
 }
+
+export interface DeleteAppointmentRequestBody {
+    token?: string | null,
+    appointmentId: number,
+    componentId?: string,
+}
+
 
 export interface GetAllMessageData {
     appointments: Appointment[],
@@ -97,3 +105,10 @@ export interface ActivityListInput {
     appointments: [string, Appointment | null][] | undefined // Se isso nao for um array nao funciona
     date: Date
 }
+
+
+export interface ConfirmationModalData {
+    message: string,
+    onConfirm: Function,
+  }
+  

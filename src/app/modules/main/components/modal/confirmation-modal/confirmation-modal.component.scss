@@ -1,0 +1,20 @@
+.confirmation-modal {
+    .message {
+        font-size: 1.6rem;
+        margin-bottom: 46px;
+        padding: 0 20px;
+        text-align: center;
+    
+        b {
+            color: var(--blue);
+        }
+    }
+    
+    .btn {
+        font-size: 1.8rem;
+        max-width: 245px;
+        margin: 0 auto;
+    }
+    
+}
+
