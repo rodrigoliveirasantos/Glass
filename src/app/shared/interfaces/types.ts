@@ -22,7 +22,7 @@ export interface GetAllRequestBody {
 }
 
 export interface AddAppointmentRequestBody {
-    token?: string
+    token: string | null
     roomId: number
     professionalId: number;
     patientId: number;
@@ -32,6 +32,13 @@ export interface AddAppointmentRequestBody {
     }
     componentId?: string;
 }
+
+export interface DeleteAppointmentRequestBody {
+    token?: string | null,
+    appointmentId: number,
+    componentId?: string,
+}
+
 
 export interface GetAllMessageData {
     appointments: Appointment[],

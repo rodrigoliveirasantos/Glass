@@ -4,6 +4,7 @@ import { ProfessionalControlService } from 'src/app/services/professional-contro
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-appointment-creation-form',
@@ -18,33 +19,21 @@ export class AppointmentCreationFormComponent implements OnInit {
   professionalId: number | null = null;
   onlyLettersRegex = '[a-zA-Zà-úÀ-Ú ]*';
   waitingResponse = false;
-  timeoutId = 0;
 
   controls = {
     roomId: new FormControl('', Validators.required),
     patient: new FormControl('', [Validators.required, Validators.pattern(this.onlyLettersRegex)]),
-    appointmentType: new FormControl('', Validators.required)
+    appointmentType: new FormControl('', [Validators.required, Validators.maxLength(30)]),
   }
 
   form = new FormGroup(this.controls);
   
-  constructor(private _profissionalControlService: ProfessionalControlService, private _professionalDataService: ProfessionalDataService, private _modalService: ModalService) {
-    this._professionalDataService.on('ADD_APPOINTMENT' , (response) => {
-      window.clearTimeout(this.timeoutId);
-      this.stopWaiting();
-
-      this._modalService.closeAll();
-      this._modalService.success('A criação da consulta foi um sucesso!');
-    });
-
-    this._professionalDataService.on('ADD_APPOINTMENT_ERROR', (response) => {
-      window.clearTimeout(this.timeoutId);
-      this.stopWaiting();
-      alert('Houve um erro ao criar a consulta.');
-
-      console.log('Response erro: ', response)
-    });
-  }
+  constructor(
+    private _profissionalControlService: ProfessionalControlService, 
+    private _professionalDataService: ProfessionalDataService, 
+    private _modalService: ModalService,
+    private _authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
     const professional = this._profissionalControlService.getSelectedProfessional();
@@ -62,19 +51,30 @@ export class AppointmentCreationFormComponent implements OnInit {
       formData[entry[0]] = entry[1].value
     });
 
-    this._professionalDataService.addAppointment({
+    this.waitResponse();
+    /* TODO - Atualizar esse body */
+    const body = {
       roomId: parseInt(formData.roomId),
       patientId: 1,
       professionalId: this.professionalId!,
       appointment: {
-        appointmentType: 'Default',
+        appointmentType: formData.appointmentType,
         appointmentDate: this.brazilianDateToJson(this.date),
+      },
+      token: this._authService.getToken(),
+    }
+
+    this._professionalDataService.addAppointment(body).then((response) => {
+      this.stopWaiting();
+      
+      if (response.success){
+        this._modalService.close('appointment-creation');
+        this._modalService.success('A consulta foi marcada com sucesso!');
+      } else {
+        this._modalService.success('Houve um erro ao marcar a consulta');
       }
     });
 
-    this.waitResponse();
-    // Cria um timeout para caso uma resposta não seja enviada
-    this.timeoutId = window.setTimeout(this.stopWaiting, 12000);
   }
 
   /** Converte uma data com fuso horário brasileiro para o formato JSON */

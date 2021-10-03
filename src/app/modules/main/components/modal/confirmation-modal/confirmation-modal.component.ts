@@ -6,12 +6,15 @@ import { ConfirmationModalData } from 'src/app/shared/interfaces/types';
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
   styleUrls: ['./confirmation-modal.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ConfirmationModalComponent implements OnInit, OnChanges {
   @Input('data') data!: ConfirmationModalData;
   message: string = 'Você deseja realizar a ação?';
 
-  constructor(private _modalService: ModalService) { }
+  constructor(private _modalService: ModalService) { 
+
+  }
 
   ngOnInit(): void {
 

@@ -1,7 +1,9 @@
-<p class="message" [innerHTML]="message">
+<div class="confirmation-modal">
+    <p class="message" [innerHTML]="message | safe">
    
-</p>
-
-<div>
-    <button class="btn red" (click)="confirm()"> CONFIRMAR </button>
+    </p>
+    
+    <div>
+        <button class="btn red" (click)="confirm()"> CONFIRMAR </button>
+    </div>
 </div>

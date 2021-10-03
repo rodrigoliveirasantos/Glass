@@ -16,6 +16,7 @@ import { CalendarControlComponent } from './components/main-screen/calendar-cont
 import { ReactiveFormsModule } from '@angular/forms';
 import { SuccessModalComponent } from './components/modal/success-modal/success-modal.component';
 import { ConfirmationModalComponent } from './components/modal/confirmation-modal/confirmation-modal.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,9 @@ import { ConfirmationModalComponent } from './components/modal/confirmation-moda
     CommonModule,
     MainRoutingModule,
     ReactiveFormsModule,
+    SharedModule
+  ],
+  exports: [
   ]
 })
 export class MainModule { }

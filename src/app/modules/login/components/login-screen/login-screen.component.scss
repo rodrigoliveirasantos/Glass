@@ -34,10 +34,6 @@
     .form-group {
         margin-bottom: 42px;
 
-        &:last-of-type {
-            margin-bottom: 68px;
-        }
-
         .control {
             font-size: 2.4rem;
         }
@@ -52,6 +48,10 @@
         &:hover {
             cursor: pointer;
         }
+    }
+
+    .form-result {
+        margin-bottom: 12px;
     }
 }
 

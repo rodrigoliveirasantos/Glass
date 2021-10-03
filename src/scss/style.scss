@@ -147,7 +147,7 @@ input[type="password"]{
 }
 
 input:disabled {
-    opacity: 0.75;
+    opacity: 0.5;
     filter: grayscale(0.3);
 }
 
@@ -224,6 +224,39 @@ input:disabled {
             @include transform(translateY(0));
         }
     }
+
+    &:disabled {
+        pointer-events: none;
+    }
+}
+
+.form-error {
+    display: block;
+
+    font-size: 1rem;
+    color: var(--red);
+    margin-top: 4px;
+}
+
+.form-result {
+    font-size: 1.6rem;
+    text-align: center;
+
+    &.red {
+        color: var(--red);
+    }
+}
+
+input.ng-touched.ng-invalid {
+    border-color: var(--red);
+
+    &:focus {
+        outline-color: var(--red);
+    }
+}
+
+label {
+    font-size: 1.3rem;
 }
 
 /* TEXT SIZES */
