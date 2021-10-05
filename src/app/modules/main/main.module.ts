@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { ActionMenuComponent } from './components/action-menu/action-menu.component';
 import { ActivityListComponent } from './components/action-menu/activity-list/activity-list.component';
-import { MenuSectionComponent } from './components/action-menu/menu-section/menu-section.component';
 import { CalendarCellComponent } from './components/calendar/calendar-cell/calendar-cell.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { AppointmentCreationFormComponent } from './components/main-screen/appointment-creation-form/appointment-creation-form.component';
@@ -23,7 +22,6 @@ import { MainRoutingModule } from './main-routing.module';
     ActionMenuComponent,
     CalendarComponent,
     CalendarCellComponent,
-    MenuSectionComponent,
     ActivityListComponent,
     ProfessionalSelectComponent,
     AppointmentCreationFormComponent,
