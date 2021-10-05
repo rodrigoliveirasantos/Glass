@@ -1,3 +1,22 @@
+<div class="icon">
+    <svg *ngIf="data.success" class="success-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="31" cy="32.9706" r="27" stroke="#282828" stroke-width="2"/>
+        <path d="M15 26.236L30.6369 47L60 3" stroke="url(#paint0_linear)" stroke-width="5"/>
+        <defs>
+            <linearGradient id="paint0_linear" x1="22.0714" y1="43.15" x2="51.621" y2="42.168" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#3F3791"/>
+                <stop offset="0.489449" stop-color="#5456C1"/>
+                <stop offset="1" stop-color="#6068DE"/>
+            </linearGradient>
+        </defs>
+    </svg>
+    
+    <svg *ngIf="!data.success" class="error-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="27" stroke="#282828" stroke-width="2"/>
+        <path d="M18 18L46 46M46 18L18 46" stroke="#E34553" stroke-width="5"/>
+    </svg>
+</div>
+
 <div class="message-wrapper">
     <p class="message">{{ data.message }}</p>
 </div>

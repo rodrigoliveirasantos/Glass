@@ -32,14 +32,14 @@ export class ActivityListComponent implements OnInit, OnChanges {
 
   // Faz a requisição para cancelar a consulta e fecha o modal de confimação
   onConfirmAppointmentCancel = async (close: Function, appointmentId: number) => {
-    this._professionalDataService.deleteAppointment({ appointmentId, token: this._authService.getToken() }).then(response => {
+    this._professionalDataService.deleteAppointment({ appointmentId, token: this._authService.getToken()! }).then(response => {
       close();
 
       /* TODO - Criar um modal pra erro */
       if (response.success){
         this._modalService.success('A consulta foi cancelada com sucesso!');
       } else {
-        this._modalService.success('Houve um erro para cancelar a consulta');
+        this._modalService.error('Houve um erro para cancelar a consulta');
       }
     });
   }

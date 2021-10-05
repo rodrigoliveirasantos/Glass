@@ -15,8 +15,8 @@
         <div>
             <label for="room-id">Sala:</label>
             <select name="" id="room-id" formControlName="roomId">
-                <option value=""> ---------------------- </option>
-                <option value="1">Sala dos advogatos</option>
+                <option value=""> --- Selecione uma sala --- </option>
+                <option *ngFor="let room of rooms" [value]="room.id">{{ room.name }}</option>
             </select>
 
             <small class="form-error" *ngIf="controls.roomId.touched && controls.roomId.invalid">É necessário preencher esse campo</small>

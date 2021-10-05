@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ConfirmationModalData } from 'src/app/shared/interfaces/types';
 import { ModalComponent } from '../modules/shared/components/modal/modal.component';
 
@@ -63,6 +63,11 @@ export class ModalService {
   /* Abre o modal de sucesso da operação com uma mensagem */
   public success(message: string = ''){
     this.open('operation-success', { message });
+  }
+
+  /* Abre o modal de sucesso da operação com uma mensagem */
+  public error(message: string = ''){
+    this.open('operation-success', { message, modalTitle: 'Erro!', success: false });
   }
 
   /* Abre o modal de confirmação de ação. Recebe um método para rodar quando a ação for confirmada */

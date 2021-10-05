@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { ModalService } from 'src/app/services/modal.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { Room } from 'src/app/shared/interfaces/types';
 
 @Component({
   selector: 'app-appointment-creation-form',
@@ -17,12 +18,13 @@ export class AppointmentCreationFormComponent implements OnInit {
   dateString = ''; // String da data selecionada para marcar usada no template
   professionalName = ''; 
   professionalId: number | null = null;
-  onlyLettersRegex = '[a-zA-Zà-úÀ-Ú ]*';
   waitingResponse = false;
+  rooms: Room[] = [];
 
   controls = {
     roomId: new FormControl('', Validators.required),
-    patient: new FormControl('', [Validators.required, Validators.pattern(this.onlyLettersRegex)]),
+    // O regex abaixo serve para permitir apenas letras
+    patient: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Zà-úÀ-Ú ]*')]), 
     appointmentType: new FormControl('', [Validators.required, Validators.maxLength(30)]),
   }
 
@@ -33,14 +35,25 @@ export class AppointmentCreationFormComponent implements OnInit {
     private _professionalDataService: ProfessionalDataService, 
     private _modalService: ModalService,
     private _authService: AuthService,
-  ) {}
+  ) {
+    this._professionalDataService.on('GET_ALL_ROOMS', (message) => {
+      this.rooms = message.data.rooms;
+    });
+
+    this._professionalDataService.on('GET_ALL_ROOMS_ERROR', (message) => {
+      this.closeParentModal();
+      this._modalService.error('Houve um erro ao pegar ao pegar as salas. Por favor, tente novamente mais tarde. Detalhes: <br/><br/>' + message.error);
+    });
+  }
 
   ngOnInit(): void {
+    this._professionalDataService.getAllRooms();
+
     const professional = this._profissionalControlService.getSelectedProfessional();
     this.professionalName = professional?.name || 'Não foi possível';
     this.professionalId = professional?.id;
     this.date = this.data.date;
-    this.dateString = `${this.date.toLocaleString('pt-BR').slice(0, -3)}`; // Formata o horário em brasileiro e tira os segundos
+    this.dateString = `${this.date.toLocaleString('pt-BR').slice(0, -3)}`; // Formata o horário em brasileiro e tira os segundos 
   }
 
   onSubmit = () => {
@@ -61,17 +74,17 @@ export class AppointmentCreationFormComponent implements OnInit {
         appointmentType: formData.appointmentType,
         appointmentDate: this.brazilianDateToJson(this.date),
       },
-      token: this._authService.getToken(),
+      token: this._authService.getToken()!,
     }
 
     this._professionalDataService.addAppointment(body).then((response) => {
       this.stopWaiting();
       
       if (response.success){
-        this._modalService.close('appointment-creation');
+        this.closeParentModal();
         this._modalService.success('A consulta foi marcada com sucesso!');
       } else {
-        this._modalService.success('Houve um erro ao marcar a consulta');
+        this._modalService.error('Houve um erro ao marcar a consulta');
       }
     });
 
@@ -93,6 +106,10 @@ export class AppointmentCreationFormComponent implements OnInit {
   private waitResponse = () => {
     this.form.disable();
     this.waitingResponse = true;
+  }
+
+  private closeParentModal(){
+    this._modalService.close('appointment-creation');
   }
 }
 

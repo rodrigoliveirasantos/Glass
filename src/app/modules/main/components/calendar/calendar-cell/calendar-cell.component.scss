@@ -1,4 +1,5 @@
 @use '../../../../../../scss/global/functions.scss' as *;
+@use '../../../../../../scss/global/variables.scss' as *;
 
 :host {
     position: relative;
@@ -31,6 +32,7 @@
         outline: 2px solid var(--blue);
         border-color: var(--blue);
         filter: brightness(1.03);
+        z-index: $indexLvl1;
 
         .day {
             color: var(--blue);
@@ -61,5 +63,13 @@
         font-size: 1.4rem;
         font-weight: 300;
         color: var(--light-grey);
+    }
+
+    &.holiday {
+        background-color: var(--yellow);
+    }
+
+    &.blocked {
+        background-color: var(--light-red);
     }
 }

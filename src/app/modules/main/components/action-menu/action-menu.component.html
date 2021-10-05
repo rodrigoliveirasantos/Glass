@@ -2,15 +2,29 @@
     <div *ngIf="appointments !== undefined">
         <header class="header">
             <p class="selected-cell-date"> {{ dateString }} </p>
-           <!--  <p class="blocked-cell-reason"> NÃO VAI ROLAR</p> -->
+            <p *ngIf="blockReason" class="blocked-cell-reason">{{ blockReason }}</p>
         </header>
         <div class="container">
             <app-menu-section section-title="Horários do profissional:">
-                <app-activity-list [appointments]="activityListInput"></app-activity-list>
-                <button class="btn red">BLOQUEAR DIA PARA O PROFISSIONAL</button>
+                <app-activity-list [appointments]="activityListInput" *ngIf="!dayIsBlocked"></app-activity-list>
+                <button 
+                    class="btn red" 
+                    *ngIf="!dayIsBlocked"
+                    (click)="sendToBlockDayModal()"
+                >
+                    {{  userIsAdmin ? 'BLOQUEAR DIA PARA O PROFISSIONAL' : 'BLOQUEAR DIA' }}
+                </button>
+                
+                <button 
+                    class="btn btn-green" 
+                    *ngIf="dayIsBlocked && (userIsAdmin || blockState === CellStates.BLOCKED_BY_PROFESSIONAL)"
+                    (click)="sendToUnlockDayModal()"
+                >
+                    {{  userIsAdmin ? 'LIBERAR DIA PARA O PROFISSIONAL' : 'LIBERAR DIA' }}
+                </button>
             </app-menu-section>
     
-            <app-menu-section section-title="Ações gerais:">
+            <app-menu-section section-title="Ações gerais:" *ngIf="userIsAdmin">
                 <button class="btn red">BLOQUEAR DIA PARA TODOS OS PROFISSIONAIS</button>
             </app-menu-section>
         </div>

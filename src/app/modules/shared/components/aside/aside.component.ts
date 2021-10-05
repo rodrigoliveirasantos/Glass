@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-aside',
@@ -6,8 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./aside.component.scss']
 })
 export class AsideComponent implements OnInit {
+  userName: string;
 
-  constructor() { }
+  constructor(public _authService: AuthService) {
+    const session = this._authService.getSession();
+    this.userName = session.name;
+  }
 
   ngOnInit(): void {
   }

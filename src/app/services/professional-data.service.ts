@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody } from '../shared/interfaces/types';
+import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody, AddEventualScheduleRequestBody, EventualStates, Frequency, CellStates, DeleteEventualScheduleRequestBody, GetSchedulesRequestBody } from '../shared/interfaces/types';
 import { AuthService } from './auth.service';
 import { HttpService } from './http.service';
 import { WSService } from './ws.service';
@@ -16,9 +16,13 @@ export class ProfessionalDataService {
   // Guarda os handlers registrados para os eventos.
   private methods: ProfessionalDataServiceMethod = {
     GET_ALL: [],
+    GET_ALL_ROOMS: [],
     OPEN: [],
     ADD_APPOINTMENT: [],
     DELETE_APPOINTMENT: [],
+    ADD_EVENTUAL_SCHEDULE: [],
+    DELETE_EVENTUAL_SCHEDULE: [],
+    GET_SCHEDULES: [],
   };
 
   // Guarda todas as requisições que foram feitas enquanto o Websocket se conectava.
@@ -36,7 +40,6 @@ export class ProfessionalDataService {
 
       this.ws.addEventListener('message', ({ data }) => {
         data = JSON.parse(data);
-        console.log(data);
 
         if (!data.success){
           throw Error(data.error + ' ' + data.code);
@@ -62,7 +65,7 @@ export class ProfessionalDataService {
     });
   }
 
-  // Adiciona um handler para um tipo de mensagem especifico.
+  // Adiciona um handler para um tipo de mensagem websocket especifico.
   public on(methodName: string, handler: WebsocketMessageHandler, context?: ThisType<any>): boolean {
     const method = this.getMethodHandlers(methodName);
     method.push({ handler, context });
@@ -79,7 +82,7 @@ export class ProfessionalDataService {
     this.methods[methodName] = this.methods[methodName].filter(({ handler: h }) => h !== handler);
   }
 
-  private send(method: string, message: any){
+  private send(method: string, message: any = {}){
     const stringfiedMessage = JSON.stringify({ method, ...message, token: this._authService.getToken() });
 
     if (!this._WSService.ready){
@@ -90,11 +93,75 @@ export class ProfessionalDataService {
     this.ws.send(stringfiedMessage);
   }
 
-  // Manda a mensagem com método GET_ALL
+  /* =============================================================== 
+    Métodos do Websocket - 
+
+    Todos eles enviam uma mensagem com o método do nome 
+    função com exceção de funções criadas como interface para usar
+    um método. Nelas o token já é injetado por padrão.
+  ===============================================================  */
+
   public getAll(body: GetAllRequestBody){
     this.send('GET_ALL', body);
   }
 
+  public getAllRooms(){
+    this.send('GET_ALL_ROOMS');
+  }
+
+  public addEventualSchedule(body: AddEventualScheduleRequestBody){
+    this.send('ADD_EVENTUAL_SCHEDULE', body);
+  }
+
+  public deleteEventualSchedule(body: DeleteEventualScheduleRequestBody){
+    this.send('DELETE_EVENTUAL_SCHEDULE', body);
+  }
+
+  public getSchedules(body: GetSchedulesRequestBody){
+    this.send('GET_SCHEDULES', body);
+  }   
+  
+  /**  
+   * Chama o método 'ADD_EVENTUAL_SCHEDULE' passando o eventualState como 
+   * BLOCKED_BY_ADMIN caso o usuário logado seja um administrador ou BLOCKED_BY_PROFESSIONAL
+   * caso não seja.
+  */
+   public blockDay(body: BlockDayBody){
+    const isAdmin = this._authService.getSession().isAdmin;
+
+    const requestBody: AddEventualScheduleRequestBody = {
+      employeeId: body.employeeId,
+      eventualSchedule: {
+        id: 42069,
+        eventualState: isAdmin ? EventualStates.BLOCKED_BY_ADMIN : EventualStates.BLOCKED_BY_PROFESSIONAL,
+        ...body.eventualSchedule,
+      },
+      componentId: body.componentId,
+    };
+
+    this.addEventualSchedule(requestBody);
+  }
+
+  /**  
+   * Chama o método 'ADD_EVENTUAL_SCHEDULE' passando o eventualState como OPEN.
+   * @return {boolean} **false** se o usuário não tem permissão para desbloquear o dia. **true** se o usuário pode.
+  */
+   public unlockDay(body: UnlockDayBody){
+    const canUnlockDay = this.userCanUnlockDay(body.currentCellState);
+
+    if (!canUnlockDay) return false;
+
+    const requestBody: DeleteEventualScheduleRequestBody = {
+      employeeId: body.employeeId,
+      eventualScheduleId: body.eventualScheduleId, 
+      componentId: body.componentId,
+    };
+
+    this.deleteEventualSchedule(requestBody);
+    return true;
+  }
+
+  /* Métodos HTTP */
   public async addAppointment(body: AddAppointmentRequestBody){
     const response = await this._httpService.post('appointment/make', { body });
     return response;
@@ -105,8 +172,9 @@ export class ProfessionalDataService {
     return response;
   } 
 
-  private getMethodHandlers(methodName: string){
-    
+  // Retorna todos os handlers do evento passado. Caso não
+  // exista, emite um aviso e retorna um array vazio
+  private getMethodHandlers(methodName: string){ 
     const method = this.methods[methodName];
     if (!method) {
         // throw new Error(`Método: ${name} não existe.`);
@@ -117,6 +185,12 @@ export class ProfessionalDataService {
     return method;
   }
 
+  private userCanUnlockDay(blockState: CellStates | EventualStates){
+    const isAdmin = this._authService.getSession().isAdmin;
+    if (isAdmin) return true;
+
+    return blockState === CellStates.BLOCKED_BY_PROFESSIONAL;
+  }
 }
 
 interface ProfessionalDataServiceMethod {
@@ -131,3 +205,18 @@ interface RequestedMethod {
   message: any,
 }
 
+interface BlockDayBody {
+  eventualSchedule: {
+    startTime: string,
+    endTime: string,
+    frequency: Frequency,
+    eventualDate: string
+  }
+
+  employeeId: number,
+  componentId?: string
+}
+
+interface UnlockDayBody extends DeleteEventualScheduleRequestBody{
+    currentCellState: CellStates,
+}

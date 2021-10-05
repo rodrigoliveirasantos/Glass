@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input,  OnInit, TemplateRef, ViewChild, } from '@angular/core';
+import { Component, ElementRef, HostListener, Input,  OnChanges,  OnInit, TemplateRef, ViewChild, } from '@angular/core';
 import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
@@ -13,7 +13,8 @@ export class ModalComponent implements OnInit {
   @Input('id') id = '';
   active = false;
   state = ModalStates.CLOSED;
-  data = {};
+  data: any = {};
+  renderedTitle!: string;
 
   constructor(private _modalService: ModalService) { }
 
@@ -25,11 +26,18 @@ export class ModalComponent implements OnInit {
     this._modalService.add(this);
   }
 
+
+
   open(data: any = {}){
     this.active = true;
     this.data = data;
 
     this.state = ModalStates.OPENING;
+    this.renderedTitle = typeof data.modalTitle !== 'undefined' ? data.modalTitle : this.title;
+    this.data = Object.keys(data).reduce((filteredData, key) => {
+      if (key !== 'modalTitle') filteredData[key] = data[key];
+      return filteredData;
+    }, {} as any);
   }
 
   close(){

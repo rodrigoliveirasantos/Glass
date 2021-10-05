@@ -8,7 +8,7 @@
     <div class="form-wrapper">
         <form action="" [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="form-group">
-                <input class="control" formControlName="cpf" type="text" placeholder="CPF" aria-label="Login" aria-placeholder="Login" (change)="loginError = false"/>
+                <input class="control" formControlName="cpf" type="text" placeholder="CPF" aria-label="Login" aria-placeholder="Login" (change)="loginError = ''"/>
                 <small class="form-error" *ngIf="controls.cpf.touched && !controls.cpf.value">É necessário preencher esse campo</small>
                 <small class="form-error" 
                     *ngIf="controls.cpf.touched && controls.cpf.errors?.maxlength || controls.cpf.errors?.minlength || controls.cpf.errors?.pattern"
@@ -18,11 +18,11 @@
             </div>
 
             <div class="form-group">
-                <input class="control" formControlName="password" type="password" placeholder="SENHA" aria-label="Senha" aria-placeholder="Senha" (change)="loginError = false"/>
+                <input class="control" formControlName="password" type="password" placeholder="SENHA" aria-label="Senha" aria-placeholder="Senha" (change)="loginError = ''"/>
                 <small class="form-error" *ngIf="controls.password.touched && !controls.password.value">É necessário preencher esse campo</small>
             </div>
 
-            <p class="form-result red" *ngIf="loginError">Login ou senha incorreto(s)</p>
+            <p class="form-result red" *ngIf="loginError">{{ loginError }}</p>
 
             <button type="submit" class="btn" aria-label="ENTRAR" [disabled]="form.invalid" [ngClass]="{'white': form.invalid}" >
                 <span class="btn-text">ENTRAR</span>

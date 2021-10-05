@@ -1,7 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, QueryList,  ViewChildren, OnInit } from '@angular/core';
+import { HolidayService } from 'src/app/services/holiday.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { ProfessionalControlService } from 'src/app/services/professional-control.service';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
-import { GetAllMessageData, GetAllRequestBody, WebsocketResponse } from 'src/app/shared/interfaces/types';
+import { CellStates, EventualSchedule,  GetAllMessageData, GetAllRequestBody, WebsocketResponse } from 'src/app/shared/interfaces/types';
 import { Schedule, Appointment } from '../../../../shared/interfaces/types';
 import { CalendarCellComponent } from './calendar-cell/calendar-cell.component';
 
@@ -18,17 +20,69 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
   readonly cols = Array(7);
 
   private currentActiveCell: CalendarCellComponent | undefined;
+  private holidays = {}
   @Input() selectedYear!: number;
   @Input() selectedMonth!: number;
 
   @ViewChildren(CalendarCellComponent) cells!: QueryList<CalendarCellComponent>; 
 
-  constructor(private changeDetector: ChangeDetectorRef, private _professionalDataService: ProfessionalDataService, private _modalService: ModalService) {
-    // Atua
-    this._professionalDataService.on('GET_ALL', this.handleCalendarData, this);
-    // Quando uma consulta é feita, atualiza o calendário para os usuários que estão vendo
-    this._professionalDataService.on('ADD_APPOINTMENT', this.handleAppointmentOperation);
-    this._professionalDataService.on('DELETE_APPOINTMENT', this.handleAppointmentOperation);
+  constructor(
+    private changeDetector: ChangeDetectorRef, 
+    private _professionalDataService: ProfessionalDataService, 
+    private _professionalControlService: ProfessionalControlService,
+    private _modalService: ModalService,
+    private _holidayService: HolidayService
+  ) {
+
+    this._professionalDataService.on('GET_ALL', async (message, listener) => this.handleCalendarData(message, listener));
+    // Quando as seguintes mensagens são recebidas, elas atualizam o calendário
+    this._professionalDataService.on('ADD_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
+        cell.appointments!.push(message.data.appointment);
+    }));
+
+    this._professionalDataService.on('DELETE_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
+      cell.appointments = cell.appointments!.filter(a => a.id !== message.data.appointment.id);
+    }));
+
+    this._professionalDataService.on('ADD_EVENTUAL_SCHEDULE', (message) => this.beforeUpdate(message, (cell, date) => { 
+      if (date.getMonth() !== this.selectedMonth) return;
+      cell.setSchedule(message.data.eventualSchedule);
+
+      const eventualState = message.data.eventualSchedule.eventualState;
+      if (eventualState === CellStates.BLOCKED_BY_ADMIN || eventualState === CellStates.BLOCKED_BY_PROFESSIONAL){
+        cell.setAppointments([]);
+      }
+    }));
+    // Ao deletar um cronograma eventual, o handler envia uma mensagem para o handler do GET_SCHEDULES terminar de atualizar
+    // a célula
+    this._professionalDataService.on('DELETE_EVENTUAL_SCHEDULE', (message) => this.beforeUpdate(message, (cell, date) => {
+      const selectedProfessionalId = this._professionalControlService.getSelectedProfessional().id;
+      const professionalInMessageId =  message.data.eventualSchedule.employee.id;
+      if (date.getMonth() !== this.selectedMonth || selectedProfessionalId !== professionalInMessageId) return;
+
+      // Passa o dia pelo componentId para pegar no handler do GET_SCHEDULES
+      this._professionalDataService.getSchedules({ 
+        employeeId: professionalInMessageId,
+        componentId: cell.day, 
+      });
+
+      return false;
+    }));
+
+    this._professionalDataService.on('GET_SCHEDULES', (message) => {
+      const cellDay = parseInt(message.componentId!);
+      const cell = this.getCellByDay(cellDay) as CalendarCellComponent;
+      const schedule = message.data.schedules.find((s: Schedule) => {
+        return cell.date.getDay() === s.dayOfWeek;
+      });
+
+      cell.setSchedule(schedule || null);
+      cell.emitData();
+    });
+
+    this._professionalDataService.on('GET_SCHEDULES_ERROR', (message) => {
+      this._modalService.error('Houve um erro para pegar os cronogramas do profissional.');
+    });
   }  
 
   ngAfterViewInit(): void {
@@ -50,30 +104,31 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
     
   }
 
-  // Responsável por atualizar o calendário após uma consulta ser marcada ou deletada.
-  // Se o usuário receber uma mensagem, mas não estiver no mês em que a mudança acontenceu, 
-  // a mensagem é ignorada
-  private handleAppointmentOperation = (message: WebsocketResponse) => {
-    const { appointment } = message.data;
-    const appointmentDate = new Date(appointment.appointmentDate);
+  // Reseponsável por executar um callback quando uma operação é feita no calendário.
+  // Esse callback recebe a célula com a data que o evento ocorreu e um objeto de date obtido da mensagem websocket.
+  // Quando um callback retorna um booleano, significa que a atualização não deverá ocorrer na execução daquele callback. Dessa forma
+  // é possível fazer uma operação assíncrona.
+  // Caso o callback não retorne false e algum usuário esteja selecionando a célula que foi atualizada, essa função irá emitir
+  // os novos dados para o action-menu.
+  private beforeUpdate = (message: WebsocketResponse, cb: (cell: CalendarCellComponent, date: Date) => void | boolean) => {
+    const data = message.data;
+    const dateString = data.eventualSchedule?.eventualDate || data.appointment?.appointmentDate;
+    const date = new Date(dateString);
 
-    if (appointmentDate.getMonth() !== this.selectedMonth) return;    
+    if (date.getMonth() !== this.selectedMonth) return;    
   
-    const cell = this.getCellByDay(appointmentDate.getDate());
+    const cell = this.getCellByDay(date.getDate());
     if (cell === -1){
       return alert('Houve um problema em atualizar o calendário. Célula com o dia não foi encontrada');
     }
 
-    if (message.method === 'ADD_APPOINTMENT'){
-      cell.appointments!.push(appointment);
-    } else {
-      cell.appointments = cell.appointments!.filter(a => a.id !== appointment.id);
-    }
+    let shouldEmit = cb(cell, date);
+    shouldEmit = typeof shouldEmit === 'boolean' ? shouldEmit : true;
     
     // Emite os novos dados para o menu lateral caso a célula do dia
     // estiver selecionada. Isso impede que outros usuários conectados na mesma tela recebam essa atualização
     // indevidamente.
-    if (cell === this.currentActiveCell) cell.emitData(); 
+    if (shouldEmit && cell === this.currentActiveCell) cell.emitData(); 
   }
 
   private getDaysOfMonth(month: number, year: number = this.today.getFullYear()): number {
@@ -88,7 +143,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
   private repairDateOverflow(month: number, year: number = this.today.getFullYear()){
     // Essa função pode receber valores maiores de 11 e menor que 0
     // Quando month > 11: Pega os meses extras no ano seguinte, ou ainda depois caso o período ultrapasse o ano seguinte;
-    // Quando month < 0: Pega os meses extras no ano anterior, ou ainda depois caso o período ultrapasse o ano anterior;
+    // Quando month < 0: Pega os meses extras no ano anterior, ou ainda antes caso o período ultrapasse o ano anterior;
 
     if (month > 11){
       const extraMonths = month % 11;
@@ -138,6 +193,18 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
       cellValue++
     }
 
+    this._holidayService.getHolidays(this.selectedYear, this.selectedMonth).then((response) => {
+      const { requestedMonth, requestedYear, holidays } = response;
+
+      if (requestedMonth !== this.selectedMonth || requestedYear !== this.selectedYear) return 
+        
+      holidays.forEach(holiday => {
+        const day = parseInt(holiday.date.split('/')[0]);
+        const cell = this.getCellByDay(day) as CalendarCellComponent;
+        cell.setBlockState(CellStates.BLOCKED_BY_HOLIDAY);
+      });
+    });
+
     const body: GetAllRequestBody = {
       employeeId: 3,
       month: this.selectedMonth + 1,
@@ -161,17 +228,31 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
   private handleCalendarData(message: WebsocketResponse, listener: ProfessionalDataService){
     const schedules = new Map<number, Schedule>();
     const data = message.data! as GetAllMessageData;
+    // Armazena o cronograma em um Map para facilitar a coleta desses dados depois
     data.schedules.forEach((s: Schedule) => schedules.set(s.dayOfWeek, s));
 
     // Se for um dia de trabalho, a célula irá receber a schedule
     // e um array vazio para as consultas, que será preenchido em frente.
     this.cells.forEach(cell => {
       const isWorkDay = !cell.otherMonth && schedules.has(cell.date.getDay());
-      const daySchedule =  isWorkDay ? schedules.get(cell.date.getDay())! : null;
-      cell.setSchedule(daySchedule);
-
-      if (isWorkDay) cell.setAppointments([]);
+      if (isWorkDay && cell.blockState !== CellStates.BLOCKED_BY_HOLIDAY) {
+        cell.setAppointments([]);
+        cell.setSchedule(schedules.get(cell.date.getDay())!);
+      } else {
+        cell.setSchedule(null);
+      }
     });
+
+    // Adiciona os cronogramas eventuais caso não seja do tipo bloqueio
+    // Quando for do tipo bloqueio, adiciona o estado de bloqueio
+    data.eventualSchedules.forEach((s: EventualSchedule) => {
+      const eventualScheduleDate = new Date(s.eventualDate);
+      const cell = this.getCellByDay(eventualScheduleDate.getDate());
+      if (cell === -1) return console.warn('Não foi possível adicionar os cronogramas eventuais, célula não encontrada');
+
+      // Adiciona o dayOfWeek para ficar compatível com uma Schedule normal. ~
+      cell.setSchedule({ ...s, dayOfWeek: eventualScheduleDate.getDay() });
+    })
 
     // Armazenando todos as consultas do mesmo dia em um array e guardado no HashMap
     const appointmentsByDay = new Map<number, Appointment[]>();
@@ -185,6 +266,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
       }
     });
 
+    // Adiciona as consultas nas células correpondentes 
     appointmentsByDay.forEach((appointments, date) => {
       const cell = this.getCellByDay(date);
       if (cell === -1) {
@@ -202,3 +284,5 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
   }
 
 }
+
+

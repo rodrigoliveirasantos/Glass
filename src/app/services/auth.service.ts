@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -7,22 +8,23 @@ import { HttpService } from './http.service';
 export class AuthService {
 
   private readonly tokenFieldName = 'user_token';
-  constructor(private _http: HttpService) { }
+  constructor(private _http: HttpService, private _router: Router) { }
 
-  public async login(cpf: string, password: string): Promise<boolean> {
+  public async login(cpf: string, password: string) {
     const body = { cpf, password };
     const data = await this._http.post(`user/login`, { body: body })
   
     if(data.success) {
       this.setToken(data.data.token);
-      return true;
     }
-    return false;
+
+    return data;
   }
 
   /** Usado para saber se o usuário possui uma sessão ativa. A sessão só terminará quando o método logout() for chamado */
   public logout() {
     localStorage.removeItem(this.tokenFieldName);
+    this._router.navigate(['/']);
   }
 
   public isLogged() {
@@ -33,7 +35,7 @@ export class AuthService {
    * Dentro do token você terá as opções: cpf, name, id
    * @return string|undefined string a chave exista, null caso a chave seja inválida.
    */
-  public getTokenData(key: ValidKeys): string {
+  public getTokenData(key: ValidKeys): any {
     let token = this.getToken();
     if(!token) {
       return 'Token inexistente';
@@ -47,7 +49,7 @@ export class AuthService {
 
   public getSession(){
     return {
-      cpf: this.getTokenData('id'),
+      id: this.getTokenData('id'),
       isAdmin: this.getTokenData('isAdmin'),
       name: this.getTokenData('name'),
     }

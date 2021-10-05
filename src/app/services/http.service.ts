@@ -29,7 +29,7 @@ export class HttpService {
     // Monta as opções da requisição
     const body = options?.body || {};
 
-    const requestOptions = new HttpRequest(method, this.url + url, body,{ 
+    const requestOptions = new HttpRequest(method, url.includes('http') ? url : this.url + url, body,{ 
       headers: headers,
       responseType: 'json'
     });

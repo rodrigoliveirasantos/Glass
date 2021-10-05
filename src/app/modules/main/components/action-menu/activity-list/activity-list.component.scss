@@ -2,6 +2,22 @@ $transparent-white: rgba(255, 255, 255, 0.75);
 
 .activity-list {
     margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+
+    scrollbar-color: var(--white) var(--blue);
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--blue);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--white);
+    }
 }
 
 .activity {

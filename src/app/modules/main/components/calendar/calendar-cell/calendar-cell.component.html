@@ -1,4 +1,10 @@
-<div class="calendar-cell" [ngClass]="{ 'other-day-month': otherMonth, 'active': active, 'full': isFull() }" (click)="emitFocusEvent()" >
-    <div *ngIf="schedule" class="day-state-icon"></div>
+<div class="calendar-cell" [ngClass]="{ 
+    'other-day-month': otherMonth, 
+    'active': !otherMonth && active, 
+    'full': !otherMonth && isFull() && !isBlocked(),
+    'holiday': blockState === cellStates.BLOCKED_BY_HOLIDAY,
+    'blocked': blockState === cellStates.BLOCKED_BY_ADMIN || blockState === cellStates.BLOCKED_BY_PROFESSIONAL
+}" (click)="emitFocusEvent()" >
+    <div *ngIf="schedule && !isBlocked()" class="day-state-icon"></div>
     <small class="day"> {{ day }} </small>
 </div>
