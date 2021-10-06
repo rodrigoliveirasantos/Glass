@@ -129,7 +129,8 @@ button {
 }
 
 input[type="text"],
-input[type="password"]{
+input[type="password"],
+input[type="time"]{
     width: 100%;
     padding: 10px 11px 0 3px;
     font-family: 'Poppins', sans-serif;
@@ -150,6 +151,15 @@ input[type="password"]{
 input:disabled {
     opacity: 0.5;
     filter: grayscale(0.3);
+}
+
+select {
+    background: none;
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--darker-blue);
+    color: var(--dark-blue);
+    border-radius: 5px;
 }
 
 .fake-input {

@@ -1,45 +1,40 @@
-<!-- <form [formGroup]="" (ngSubmit)="">
-    <div class="form-group multi-input infos">
-        <div>
-            <label for="">Profissional:</label>
-            <div class="fake-input">{{ professionalName }}</div>
-        </div>
+<p class="form-description">
+    Insira as informações abaixo para abrir um dia de trabalho excepcional
+</p>
 
-        <div>
-            <label for="">Data:</label>
-            <div class="fake-input">{{ dateString }}</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="flex">
+        <div class="form-group form-group__big">
+            <div class="time-group">
+                <label for="start-time">Das</label>
+                <input id="start-time" type="time" formControlName="startTime" />
+                <small class="form-error" *ngIf="controls.startTime.dirty && !controls.startTime.value">Esse campo não pode ficar vazio</small>
+            </div>
+        
+            <div class="time-group ">
+                <label for="end-time">Às</label>
+                <input id="end-time" type="time" formControlName="endTime" />
+                <small class="form-error" *ngIf="controls.endTime.dirty && !controls.endTime.value">Esse campo não pode ficar vazio</small>
+                <small class="form-error" *ngIf="controls.endTime.dirty && controls.endTime.errors?.invalidDate">O tempo final não pode ser menor que o inicial</small>
+            </div>
+        </div>
+        
+    
+        <div class="form-group form-group__small form-group__last">
+            <label for="frequency">Tempo das consultas</label>
+            <select name="frequency" id="frequency" formControlName="frequency">
+                <option value="" selected>--- Selecione uma opção ---</option>
+                <option *ngFor="let option of selectOptions" [value]="option.value">{{ option.text }}</option>
+            </select>
+            <small class="form-error" *ngIf="controls.frequency.dirty && !controls.frequency.value">Esse campo não pode ficar vazio</small>
+            <small class="form-error" *ngIf="controls.frequency.dirty && controls.frequency.errors?.invalidFrequency">O intervalo não pode ser maior que o tempo total de trabalho</small>
         </div>
     </div>
     
-    <div class="form-group multi-input">
-        <div>
-            <label for="room-id">Sala:</label>
-            <select name="" id="room-id" formControlName="roomId">
-                <option value=""> --- Selecione uma sala --- </option>
-                <option *ngFor="let room of rooms" [value]="room.id">{{ room.name }}</option>
-            </select>
 
-            <small class="form-error" *ngIf="controls.roomId.touched && controls.roomId.invalid">É necessário preencher esse campo</small>
-        </div>
-        
-        <div>
-            <label for="patient">Paciente:</label>
-            <input type="text" value="" id="patient" formControlName="patient"/>
-
-            <small class="form-error" *ngIf="controls.patient.touched && !controls.patient.value">É necessário preencher esse campo</small>
-            <small class="form-error" *ngIf="controls.patient.touched && controls.patient.errors?.pattern">Há caracteres inválidos</small>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label for="appointment-type">Tipo da operação:</label>
-        <input type="text" value="" id="appointment-type" formControlName="appointmentType"/>
-        <small class="form-error" *ngIf="controls.appointmentType.touched && !controls.appointmentType.value">É necessário preencher esse campo</small>
-        <small class="form-error" *ngIf="controls.appointmentType.touched && controls.appointmentType.errors?.maxlength">Esse campo deve ter no máximo 30 caractéres</small>
-    </div>
 
     <div class="form-group">
         <button class="btn submit-btn" type="submit" [ngClass]="{ 'white': form.invalid }" [disabled]="form.invalid">Enviar</button>
     </div>
 
-</form> -->
+</form> 

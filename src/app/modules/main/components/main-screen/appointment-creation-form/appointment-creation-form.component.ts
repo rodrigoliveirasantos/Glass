@@ -6,6 +6,7 @@ import { ProfessionalDataService } from 'src/app/services/professional-data.serv
 import { ModalService } from 'src/app/services/modal.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Room } from 'src/app/shared/interfaces/types';
+import Global from 'src/app/shared/global';
 
 @Component({
   selector: 'app-appointment-creation-form',
@@ -72,7 +73,7 @@ export class AppointmentCreationFormComponent implements OnInit {
       professionalId: this.professionalId!,
       appointment: {
         appointmentType: formData.appointmentType,
-        appointmentDate: this.brazilianDateToJson(this.date),
+        appointmentDate: Global.brazilianDateToJson(this.date),
       },
       token: this._authService.getToken()!,
     }
@@ -90,13 +91,7 @@ export class AppointmentCreationFormComponent implements OnInit {
 
   }
 
-  /** Converte uma data com fuso horário brasileiro para o formato JSON */
-  private brazilianDateToJson(date: Date){
-    const [dateString, timeString] = date.toLocaleString('pt-BR').split(' ');
-    const [day, month, year] = dateString.split('/');
 
-    return `${year}-${month}-${day}T${timeString}`;
-  }
 
   private stopWaiting = () => {
     this.form.enable();

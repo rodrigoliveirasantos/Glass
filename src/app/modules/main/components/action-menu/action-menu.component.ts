@@ -82,24 +82,28 @@ export class ActionMenuComponent implements OnInit {
   sendToUnlockDayModal(){
     if (!this.dayIsBlocked) return;
 
-    this._modalService.confirmation({
-      message: `Você tem certeza que deseja <b>desbloquear</b> o dia: <b>${this.dateString}</b>? Administradores e profissionais poderão marcar consulta nesse dia.`,
-      onConfirm: (close) => {
-        this._professionalDataService.deleteEventualSchedule({
-          employeeId: this._professionalControlService.getSelectedProfessional().id,
-          eventualScheduleId: this.schedule!.id,
-          componentId: this._authService.getSession().id,
-        });
-
-        close();
-      }
-    });
+    if (this.blockState === CellStates.IDLE || this.blockState === CellStates.BLOCKED_BY_HOLIDAY){
+      this._modalService.open('eventual-schedule', { employeeId: this._professionalControlService.getSelectedProfessional().id, date: this.date })
+    } else {
+      this._modalService.confirmation({
+        message: `Você tem certeza que deseja <b>desbloquear</b> o dia: <b>${this.dateString}</b>? Administradores e profissionais poderão marcar consulta nesse dia.`,
+        onConfirm: (close) => {
+          this._professionalDataService.deleteEventualSchedule({
+            employeeId: this._professionalControlService.getSelectedProfessional().id,
+            eventualScheduleId: this.schedule!.id,
+            componentId: this._authService.getSession().id,
+          });
+  
+          close(); 
+        }
+      });
+    }
   }
 
   // Pega a mensagem sobre o status de bloqueio do dia. A mensagem de bloqueio
   // tem um alteração dependendo se o usuário é um administrador ou não. Isso funciona porque
   // o professional só pode ver dias bloqueados por si mesmo ou pelo profissional.
-  private getMessageForBlockState(state: CellStates | EventualStates){
+  private getMessageByBlockState(state: CellStates | EventualStates){
     switch(state){
       case CellStates.BLOCKED_BY_ADMIN:
         return 'Esse dia foi bloqueado por um administrador';
@@ -124,7 +128,7 @@ export class ActionMenuComponent implements OnInit {
     this.date = date;
     this.dateString = date.toLocaleDateString('pt-BR');
     this.appointments = appointments;
-    this.blockReason = this.getMessageForBlockState(cellData.blockState);
+    this.blockReason = this.getMessageByBlockState(cellData.blockState);
     this.dayIsBlocked =  cellData.blockState !== CellStates.OPEN 
      
     this.blockState = cellData.blockState;

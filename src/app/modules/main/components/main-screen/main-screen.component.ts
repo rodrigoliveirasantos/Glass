@@ -3,6 +3,7 @@ import { CalendarControlService } from 'src/app/services/calendar-control.servic
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { ProfessionalControlService } from 'src/app/services/professional-control.service';
 import { GetAllMessageData, Professional } from 'src/app/shared/interfaces/types';
+import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
   selector: 'app-main-screen',
@@ -22,7 +23,8 @@ export class MainScreenComponent implements OnInit {
   constructor(
     private _professionalDataService: ProfessionalDataService, 
     private _calendarControlService: CalendarControlService,
-    private _professionalControlService: ProfessionalControlService
+    private _professionalControlService: ProfessionalControlService,
+    private _modalService: ModalService,
   ){  
 
     this._professionalDataService.on('OPEN', (message) => {

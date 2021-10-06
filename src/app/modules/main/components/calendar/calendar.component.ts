@@ -37,7 +37,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
     this._professionalDataService.on('GET_ALL', async (message, listener) => this.handleCalendarData(message, listener));
     // Quando as seguintes mensagens são recebidas, elas atualizam o calendário
     this._professionalDataService.on('ADD_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
-        cell.appointments!.push(message.data.appointment);
+        cell.appointments ?  cell.appointments.push(message.data.appointment) : cell.setAppointments([ message.data.appointment ]);
     }));
 
     this._professionalDataService.on('DELETE_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
