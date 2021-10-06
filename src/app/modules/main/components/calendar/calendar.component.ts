@@ -189,6 +189,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
       cell.day = cellValue;
       cell.date = new Date(`${year}-${cellMonth + 1 === 0 ? 12 : cellMonth + 1 }-${cellValue} 00:00:00`);
       cell.otherMonth = cellMonth !== month;
+      cell.setBlockState(CellStates.IDLE);
 
       cellValue++
     }

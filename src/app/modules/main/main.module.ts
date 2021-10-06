@@ -13,6 +13,7 @@ import { ProfessionalSelectComponent } from './components/main-screen/profession
 import { ConfirmationModalComponent } from './components/modal/confirmation-modal/confirmation-modal.component';
 import { SuccessModalComponent } from './components/modal/success-modal/success-modal.component';
 import { MainRoutingModule } from './main-routing.module';
+import { ProfessionalEventualScheduleFormComponent } from './components/main-screen/professional-eventual-schedule-form/professional-eventual-schedule-form.component';
 
 
 
@@ -28,6 +29,7 @@ import { MainRoutingModule } from './main-routing.module';
     CalendarControlComponent,
     SuccessModalComponent,
     ConfirmationModalComponent,
+    ProfessionalEventualScheduleFormComponent,
   ],
   imports: [
     CommonModule,

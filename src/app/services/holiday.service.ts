@@ -31,16 +31,15 @@ export class HolidayService {
       requestedYear: year,
       holidays: typeof month !== 'undefined' ? this.filterByMonth(filteredHolidays, month) : filteredHolidays
     };
-
-    
   }
 
   private filterByMonth(holidays: Holiday[], month: number, ){
     return holidays.filter(holiday => {
       const holidayMonth = parseInt(holiday.date.split('/')[1]);
       return month === holidayMonth - 1; 
-    })
+    });
   }
+
 }
 
 // Os dados que vem da API de feriados
