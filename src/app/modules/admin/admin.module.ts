@@ -6,6 +6,8 @@ import { AdminCardPeopleComponent } from './components/cards/admin-card-people/a
 import { AdminCardRoomComponent } from './components/cards/admin-card-room/admin-card-room.component';
 import { MainScreenComponent } from './components/main-screen/main-screen.component';
 import { SectionMenuComponent } from './components/section-menu/section-menu.component';
+import { RoomCreationFormComponent } from './components/room-creation-form/room-creation-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -14,12 +16,15 @@ import { SectionMenuComponent } from './components/section-menu/section-menu.com
     MainScreenComponent,
     SectionMenuComponent,
     AdminCardRoomComponent,
-    AdminCardPeopleComponent
+    AdminCardPeopleComponent,
+    RoomCreationFormComponent,
+    
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule, 
   ],
 })
 export class AdminModule { }

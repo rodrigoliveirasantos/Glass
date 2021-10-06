@@ -36,6 +36,7 @@ export class ProfessionalControlService {
   }
 
   public subscribeToProfessionalList(listener: ProfessionalListObserver){
+    if(this.professionalList) listener(this.professionalList);
     this.professionalListSubject.subscribe(listener);
   }
 

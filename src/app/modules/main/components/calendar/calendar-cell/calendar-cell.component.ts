@@ -18,6 +18,7 @@ export class CalendarCellComponent implements OnInit {
   cellStates = CellStates;
   blockState: CellStates | EventualStates = CellStates.IDLE;
   full = false;
+  eventual = false;
 
   // Indica se está clicado ou não
   active = false;
@@ -70,6 +71,10 @@ export class CalendarCellComponent implements OnInit {
     this.setBlockState(eventualState !== undefined ? eventualState : CellStates.OPEN);
   }
 
+  public setEventual(value: boolean){
+    this.eventual = value;
+  }
+
   public setAppointments(value: Appointment[] | null){
     this.appointments = value;
   }
@@ -80,8 +85,10 @@ export class CalendarCellComponent implements OnInit {
 
   public isFull(){
     if (!this.schedule || !this.appointments) return false;
+    const totalTime = this.getTotalScheduleTime() / 1000;
+    const appointmentTime = this.appointments.length * Global.getFrequencyInTime(this.schedule.frequency);
 
-    return this.appointments.length ===  this.getTotalScheduleTime() / Global.getFrequencyInTime(this.schedule.frequency);
+    return appointmentTime >= totalTime;
   }
 
   public isBlocked(){
@@ -110,7 +117,7 @@ export class CalendarCellComponent implements OnInit {
     const timeInterval = this.getTotalScheduleTime();
     const scheduleTimes = new Map<string, Appointment | null>();
 
-    for (let i = 0; i <= (timeInterval / timePerAppointment); i++){ 
+    for (let i = 0; i < (timeInterval / timePerAppointment); i++){ 
       const timeString = (new Date(startTime + timePerAppointment * i)).toLocaleTimeString('pt-BR');
       scheduleTimes.set(timeString, null);
     }

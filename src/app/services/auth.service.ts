@@ -25,8 +25,7 @@ export class AuthService {
   /** Usado para saber se o usuário possui uma sessão ativa. A sessão só terminará quando o método logout() for chamado */
   public logout() {
     localStorage.removeItem(this.tokenFieldName);
-    this._router.navigate(['/']);
-    this._wsService.getClient()?.close();
+    this._router.navigate(['/']); 
   }
 
   public isLogged() {

@@ -16,19 +16,23 @@ export class ProfessionalSelectComponent implements OnInit, OnChanges {
   @ViewChild('optionList') optionListRef!: ElementRef<HTMLUListElement>;
 
   constructor(private _professionalControlService: ProfessionalControlService) {
+    
+  }
+
+  ngOnInit(): void {
     this._professionalControlService.subscribeToProfessionalList((list) => {
       this.professionalList = list;
       this.selectedProfessional = list[0];
     });
-  }
-
-  ngOnInit(): void {
+    
     document.addEventListener('click', this.onBlur);
   }
 
   ngOnChanges(): void {
     this.selectedProfessional = this.professionalList[0];
   }
+
+
 
   public toggleActive(force?: boolean){
       this.active = (typeof force) === 'boolean' ? force! : !this.active;

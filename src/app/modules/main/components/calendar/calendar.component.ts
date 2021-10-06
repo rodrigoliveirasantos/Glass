@@ -37,7 +37,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
     this._professionalDataService.on('GET_ALL', async (message, listener) => this.handleCalendarData(message, listener));
     // Quando as seguintes mensagens são recebidas, elas atualizam o calendário
     this._professionalDataService.on('ADD_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
-        cell.appointments ?  cell.appointments.push(message.data.appointment) : cell.setAppointments([ message.data.appointment ]);
+        cell.appointments ? cell.appointments.push(message.data.appointment) : cell.setAppointments([ message.data.appointment ]);
     }));
 
     this._professionalDataService.on('DELETE_APPOINTMENT', (message) => this.beforeUpdate(message, (cell) => {
@@ -114,9 +114,9 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
     const data = message.data;
     const dateString = data.eventualSchedule?.eventualDate || data.appointment?.appointmentDate;
     const date = new Date(dateString);
-
-    if (date.getMonth() !== this.selectedMonth) return;    
   
+    if (date.getMonth() !== this.selectedMonth) return;    
+
     const cell = this.getCellByDay(date.getDate());
     if (cell === -1){
       return alert('Houve um problema em atualizar o calendário. Célula com o dia não foi encontrada');
@@ -190,6 +190,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
       cell.date = new Date(`${year}-${cellMonth + 1 === 0 ? 12 : cellMonth + 1 }-${cellValue} 00:00:00`);
       cell.otherMonth = cellMonth !== month;
       cell.setBlockState(CellStates.IDLE);
+      cell.setEventual(false);
 
       cellValue++
     }
@@ -202,7 +203,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
       holidays.forEach(holiday => {
         const day = parseInt(holiday.date.split('/')[0]);
         const cell = this.getCellByDay(day) as CalendarCellComponent;
-        cell.setBlockState(CellStates.BLOCKED_BY_HOLIDAY);
+        if (!cell.eventual) cell.setBlockState(CellStates.BLOCKED_BY_HOLIDAY);
       });
     });
 
@@ -253,6 +254,7 @@ export class CalendarComponent implements AfterViewInit, OnChanges, OnInit {
 
       // Adiciona o dayOfWeek para ficar compatível com uma Schedule normal. ~
       cell.setSchedule({ ...s, dayOfWeek: eventualScheduleDate.getDay() });
+      cell.setEventual(true);
     })
 
     // Armazenando todos as consultas do mesmo dia em um array e guardado no HashMap

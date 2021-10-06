@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody, AddEventualScheduleRequestBody, EventualStates, Frequency, CellStates, DeleteEventualScheduleRequestBody, GetSchedulesRequestBody, AddRoomRequestBody, UpdateRoomRequestBody, DeleteRoomRequestBody } from '../shared/interfaces/types';
+import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody, AddEventualScheduleRequestBody, EventualStates, Frequency, CellStates, DeleteEventualScheduleRequestBody, GetSchedulesRequestBody, AddRoomRequestBody, UpdateRoomRequestBody, DeleteRoomRequestBody, GetAllPatientsRequestBody } from '../shared/interfaces/types';
 import { AuthService } from './auth.service';
 import { HttpService } from './http.service';
 import { WSService } from './ws.service';
@@ -19,6 +19,7 @@ export class ProfessionalDataService {
 
     GET_ALL: [],
     GET_ALL_ROOMS: [],
+    GET_ALL_PATIENTS: [],
     GET_SCHEDULES: [],
  
     ADD_APPOINTMENT: [],
@@ -43,7 +44,6 @@ export class ProfessionalDataService {
 
     // Se conecta com o Websocket e faz todas as requisições agendadas.
     this._WSService.wsObserver.subscribe((ws: WebSocket) => {
-      console.log(ws);
       this.ws = ws;
 
       this.ws.addEventListener('message', ({ data }) => {
@@ -114,6 +114,10 @@ export class ProfessionalDataService {
 
   public getAll(body: GetAllRequestBody){
     this.send('GET_ALL', body);
+  }
+
+  public getAllPatients(body?: GetAllPatientsRequestBody){
+    this.send('GET_ALL_PATIENTS', body);
   }
 
   public getAllRooms(){

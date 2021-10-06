@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { ModalService } from 'src/app/services/modal.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Room } from 'src/app/shared/interfaces/types';
+import { Patient, Room } from 'src/app/shared/interfaces/types';
 import Global from 'src/app/shared/global';
 import { RoomService } from 'src/app/services/room.service';
 
@@ -21,12 +21,14 @@ export class AppointmentCreationFormComponent implements OnInit {
   professionalName = ''; 
   professionalId: number | null = null;
   waitingResponse = false;
+
   rooms: Room[] = [];
+  patients: Patient[] = [];
 
   controls = {
     roomId: new FormControl('', Validators.required),
     // O regex abaixo serve para permitir apenas letras
-    patient: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Zà-úÀ-Ú ]*')]), 
+    patient: new FormControl('', Validators.required), 
     appointmentType: new FormControl('', [Validators.required, Validators.maxLength(30)]),
   }
 
@@ -43,6 +45,19 @@ export class AppointmentCreationFormComponent implements OnInit {
       this.rooms = rooms;
     });
 
+    this._roomService.onChanges((rooms) => {
+      this.rooms = rooms;
+    })
+
+    this._professionalDataService.on('GET_ALL_PATIENTS', (message) => {
+      this.patients = message.data.patients;
+    });
+
+    this._professionalDataService.on('GET_ALL_PATIENTS_ERROR', (message) => {
+      this.closeParentModal();
+      this._modalService.error('Houve um erro ao pegar os pacientes.')
+    });
+
     this._professionalDataService.on('GET_ALL_ROOMS_ERROR', (message) => {
       this.closeParentModal();
     });
@@ -55,6 +70,8 @@ export class AppointmentCreationFormComponent implements OnInit {
     this.professionalId = professional?.id;
     this.date = this.data.date;
     this.dateString = `${this.date.toLocaleString('pt-BR').slice(0, -3)}`; // Formata o horário em brasileiro e tira os segundos 
+
+    this._professionalDataService.getAllPatients();
   }
 
   onSubmit = () => {
@@ -69,7 +86,7 @@ export class AppointmentCreationFormComponent implements OnInit {
     /* TODO - Atualizar esse body */
     const body = {
       roomId: parseInt(formData.roomId),
-      patientId: 1,
+      patientId: this.controls.patient.value,
       professionalId: this.professionalId!,
       appointment: {
         appointmentType: formData.appointmentType,

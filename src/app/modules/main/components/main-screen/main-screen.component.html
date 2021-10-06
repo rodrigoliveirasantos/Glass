@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <app-professional-select></app-professional-select>
+            <app-professional-select *ngIf="isAdmin"></app-professional-select>
 
             <div class="professional-info">
                 <div class="professional-rotation">
@@ -43,15 +43,15 @@
 
     <app-action-menu></app-action-menu>
 
-    <app-modal id="appointment-creation" [content-template]="content" modal-title="Adicionar consulta">
-        <ng-template #content let-data>
-            <app-appointment-creation-form [data]="data"></app-appointment-creation-form>
-        </ng-template>
-    </app-modal>
-
     <app-modal id="eventual-schedule" [content-template]="eventualSchedule" modal-title="Cronograma excepcional">
         <ng-template #eventualSchedule let-data>
             <app-professional-eventual-schedule-form [data]="data"></app-professional-eventual-schedule-form>
+        </ng-template>
+    </app-modal>
+
+    <app-modal id="appointment-creation" [content-template]="content" modal-title="Adicionar consulta">
+        <ng-template #content let-data>
+            <app-appointment-creation-form [data]="data"></app-appointment-creation-form>
         </ng-template>
     </app-modal>
 

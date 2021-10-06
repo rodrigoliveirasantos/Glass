@@ -10,8 +10,6 @@ import { AppointmentCreationFormComponent } from './components/main-screen/appoi
 import { CalendarControlComponent } from './components/main-screen/calendar-control/calendar-control.component';
 import { MainScreenComponent } from './components/main-screen/main-screen.component';
 import { ProfessionalSelectComponent } from './components/main-screen/professional-select/professional-select.component';
-import { ConfirmationModalComponent } from './components/modal/confirmation-modal/confirmation-modal.component';
-import { SuccessModalComponent } from './components/modal/success-modal/success-modal.component';
 import { MainRoutingModule } from './main-routing.module';
 import { ProfessionalEventualScheduleFormComponent } from './components/main-screen/professional-eventual-schedule-form/professional-eventual-schedule-form.component';
 
@@ -27,8 +25,6 @@ import { ProfessionalEventualScheduleFormComponent } from './components/main-scr
     ProfessionalSelectComponent,
     AppointmentCreationFormComponent,
     CalendarControlComponent,
-    SuccessModalComponent,
-    ConfirmationModalComponent,
     ProfessionalEventualScheduleFormComponent,
   ],
   imports: [

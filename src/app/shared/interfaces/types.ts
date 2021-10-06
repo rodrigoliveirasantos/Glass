@@ -27,6 +27,11 @@ export interface GetAllRequestBody {
     year: number
 }
 
+// Modelo de corpo da requisição da mensagem GET_PATIENTS 
+export interface GetAllPatientsRequestBody {
+    componentId?: componentId
+}
+
 // Modelo de corpo da requisição da mensagem ADD_APPOINTMENT 
 export interface AddAppointmentRequestBody {
     token: Token,
@@ -68,11 +73,15 @@ export interface GetSchedulesRequestBody {
 }
 
 export interface AddRoomRequestBody {
-    name: string;
+    room: {
+        name: string;
+    }
+    
     componentId?: componentId;
 }
 
-export interface UpdateRoomRequestBody extends Room {
+export interface UpdateRoomRequestBody {
+    room: Room,
     componentId?: componentId;
 }
 
@@ -148,17 +157,15 @@ export interface Appointment {
     appointmentDate: string,
     appointmentType: number,
     id: number,
-    patient: Costumer,
+    patient: Patient,
     professional: Professional,
     room: Room
 }
 
-export interface Costumer {
+export interface Patient {
     id: number,
     name: string,
-    birthday: string | null,
-    cpf: string | null,
-    rg: string | null,
+    birthday: string | null
     phone: string | null
 }
 

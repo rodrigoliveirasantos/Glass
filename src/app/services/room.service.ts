@@ -9,6 +9,7 @@ import { ProfessionalDataService } from './professional-data.service';
 export class RoomService {
   private rooms: Room[] = [];
   private queue: ScheduledRequest[] = [];
+  private changeListeners: RoomDataHandler[] = [];
 
   constructor(
     private _professionalDataService: ProfessionalDataService,
@@ -30,21 +31,24 @@ export class RoomService {
 
     this._professionalDataService.on('UPDATE_ROOM', (message) => {
       const updatedRoom = message.data.room;
-      const room = this.rooms.find(room => room.id === updatedRoom);
+      const room = this.rooms.find(room => room.id === updatedRoom.id);
+
       if (!room){
         this._modalService.error('Houve um erro ao encontrar a sala para atualizar.');
         return
       }
 
       room.name = updatedRoom.name;
+      this.emitChange('UPDATE_ROOM', updatedRoom);
     });
 
     this._professionalDataService.on('DELETE_ROOM', (message) => {
       const deletedRoom = message.data.room;
       this.rooms = this.rooms.filter(room => room.id !== deletedRoom.id);
+
+      this.emitChange('DELETE_ROOM', deletedRoom);
     });
 
-    
     this._professionalDataService.getAllRooms();
   }
 
@@ -61,12 +65,23 @@ export class RoomService {
     this._professionalDataService.addRoom(body);
   }
 
- 
+  onChanges(cb: RoomDataHandler){
+    this.changeListeners.push(cb);
+  }
+
+  removeChangeListener(cb: RoomDataHandler){
+    this.changeListeners = this.changeListeners.filter(listener => listener !== cb);
+  }
+
+  emitChange(operation: string, room?: Room,){
+    this.changeListeners.forEach(listener => listener(this.rooms, operation, room));
+  }
+
   // GetRooms recebe um callback porque caso o serviço ainda não tenha baixado as salas,
   // será necessário fazer uma requisição websocket para baixar.
-  getRooms(cb: (rooms: Room[]) => void, context?: ThisType<any>){
+  getRooms(cb: RoomDataHandler, context?: ThisType<any>){
     if (this.rooms.length > 0) {
-      cb.apply(context ? context : null, [ this.rooms ]);
+      cb.apply(context ? context : null, [ this.rooms, 'GET_ALL_ROOMS' ]);
     } else {
       this.queue.push({
         handler: cb,
@@ -77,14 +92,17 @@ export class RoomService {
 
   private onGetAllRooms = (message: WebsocketResponse, service: ProfessionalDataService) => {
     this.rooms = message.data.rooms;
-    this.queue.forEach(request => request.handler.apply(request.context || null, [this.rooms]));
+    this.queue.forEach(request => request.handler.apply(request.context || null, [this.rooms, 'GET_ALL_ROOMS']));
     this.queue = [];
 
     service.unsubscribe('GET_ALL_ROOMS', this.onGetAllRooms);
   }
 }
 
+type RoomDataHandler = (rooms: Room[], operation: string, changedRoom?: Room ) => void;
+
 interface ScheduledRequest {
-  handler: (rooms: Room[]) => void,
+  handler: RoomDataHandler,
   context?: ThisType<any>,
 }
+

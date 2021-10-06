@@ -24,10 +24,12 @@
         
         <div>
             <label for="patient">Paciente:</label>
-            <input type="text" value="" id="patient" formControlName="patient"/>
+            <select name="" id="patient" formControlName="patient">
+                <option value=""> --- Selecione o paciente --- </option>
+                <option *ngFor="let patient of patients" [value]="patient.id">{{ patient.name }}</option>
+            </select>
 
             <small class="form-error" *ngIf="controls.patient.touched && !controls.patient.value">É necessário preencher esse campo</small>
-            <small class="form-error" *ngIf="controls.patient.touched && controls.patient.errors?.pattern">Há caracteres inválidos</small>
         </div>
     </div>
 

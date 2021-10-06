@@ -1,0 +1,26 @@
+.form-description {
+    font-size: 1.6rem;
+    margin-bottom: 36px;
+    text-align: center;
+
+    b {
+        color: var(--blue);
+    }
+}
+
+input {
+    font-size: 1.8rem;
+}
+
+.form-group {
+
+    &__first {
+        margin-bottom: 48px;
+    }
+}
+
+.submit-btn {
+    max-width: 200px;
+    margin: 0 auto;
+    font-size: 1.6rem;
+}

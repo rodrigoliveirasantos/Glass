@@ -1,0 +1,19 @@
+<div class="form-description">
+    <p class="edit-message" *ngIf="data.mode === 'edit'">Digite as novas informações para a sala <b>{{ data.selectedRoom!.name }}</b></p>
+    <p class="edit-message" *ngIf="data.mode === 'creation'">Digite as informações para a nova sala.</p>
+</div>
+
+<form action="" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group form-group__first">
+        <label for="name">Nome da sala:</label>
+        <input id="name" type="text" required formControlName="name"/>
+        <small class="form-error" *ngIf="controls.name.dirty && !controls.name.value">Esse campo não pode ficar em branco</small>
+        <small class="form-error" *ngIf="controls.name.dirty && controls.name.errors?.maxlength">Esse campo pode ter no máximo 30 caractéres</small>
+
+    </div>
+    
+    <div class="form-group">
+        <button class="btn submit-btn" type="submit" [ngClass]="{ 'white': form.invalid }" [disabled]="form.invalid">Enviar</button>
+    </div>
+</form>
+

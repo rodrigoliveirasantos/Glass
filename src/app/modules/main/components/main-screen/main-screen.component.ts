@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CalendarControlService } from 'src/app/services/calendar-control.service';
 import { ProfessionalDataService } from 'src/app/services/professional-data.service';
 import { ProfessionalControlService } from 'src/app/services/professional-control.service';
 import { GetAllMessageData, Professional } from 'src/app/shared/interfaces/types';
 import { ModalService } from 'src/app/services/modal.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-main-screen',
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss']
 })
-export class MainScreenComponent implements OnInit {
+export class MainScreenComponent implements OnInit, OnDestroy {
   selectedYear: number = 0;
   selectedMonth: number = 0;
   selectedMonthName: string = 'Carregando...';
@@ -19,14 +20,16 @@ export class MainScreenComponent implements OnInit {
   professionalList: Professional[] = [];
   weekDayList = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
   professionalWorkdays = '';
+  isAdmin: boolean;
   
   constructor(
     private _professionalDataService: ProfessionalDataService, 
     private _calendarControlService: CalendarControlService,
     private _professionalControlService: ProfessionalControlService,
     private _modalService: ModalService,
+    private _authService: AuthService,
   ){  
-
+    this.isAdmin = _authService.getSession().isAdmin;
     this._professionalDataService.on('OPEN', (message) => {
       this.professionalList = message.data.professionals;
       this.selectedProfessional = this.professionalList[0];
@@ -66,6 +69,10 @@ export class MainScreenComponent implements OnInit {
 
   ngOnInit(){
     
+  }
+
+  ngOnDestroy(){
+    this._modalService.removeAll();
   }
 
   public handleProfessionalSelectionEvent = (newSelectedProfessional: Professional) => {

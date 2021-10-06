@@ -26,7 +26,6 @@ export class ModalService {
 
   public remove(id: string){
     const filteredModals: Modals = {};
-    if (id === 'operation-success') return;
 
     for (let [key, modal] of Object.entries(this.modals)){
       if (key !== id) filteredModals[key] = modal;
@@ -55,6 +54,11 @@ export class ModalService {
 
   public closeAll(){
     Object.values(this.modals).forEach(modal => modal.close());
+  }
+
+  public removeAll(){
+    this.closeAll();
+    this.modals = {};
   }
 
 

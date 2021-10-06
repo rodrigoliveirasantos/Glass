@@ -1,25 +1,22 @@
 <div class="admin-card">
-    <strong class="admin-card__title">Título</strong>
+    <strong class="admin-card__title">Salas</strong>
     <div class="admin-card__content">
         <div class="admin-card__list-container">
             <ul class="admin-card__list">
-                <li class="admin-card__list-item">Sala dos advogatos</li>
-                <li class="admin-card__list-item">Sala dos advocatos</li>
-                <li class="admin-card__list-item">Sala dos advosapos</li>
-                <li class="admin-card__list-item">Sala dos advovapos</li>
+                <li *ngFor="let room of rooms" (click)="onClickOnItem($event, room)" class="admin-card__list-item">{{ room.name }}</li>
             </ul>
-            <button type="button" class="btn admin-card__list-button">
+            <button type="button" class="btn admin-card__list-button" (click)="sendToCreateRoom()">
                 +
             </button>
         </div>
-        <div class="admin-card__info">
+        <div class="admin-card__info" *ngIf="selectedRoom">
             <div class="info__container">
-                <strong class="info__title">Sala dos advogatos</strong>
-                <small class="info__subtitle">número 1</small>
+                <strong class="info__title">{{ selectedRoom.name }}</strong>
+                <small class="info__subtitle"><b>Número: </b>{{ selectedRoom.id }}</small>
             </div>
 
-            <button type="button" class="btn red">Apagar</button>
-            <button type="button" class="btn">Editar</button>
+            <button type="button" class="btn red" (click)="sendToDeleteRoom()">Apagar</button>
+            <button type="button" class="btn" (click)="sendToEditRoom()">Editar</button>
         </div>
     </div>
 </div>
