@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody, AddEventualScheduleRequestBody, EventualStates, Frequency, CellStates, DeleteEventualScheduleRequestBody, GetSchedulesRequestBody } from '../shared/interfaces/types';
+import { WebsocketResponse, WebsocketMessageHandler, GetAllRequestBody, AddAppointmentRequestBody, DeleteAppointmentRequestBody, AddEventualScheduleRequestBody, EventualStates, Frequency, CellStates, DeleteEventualScheduleRequestBody, GetSchedulesRequestBody, AddRoomRequestBody, UpdateRoomRequestBody, DeleteRoomRequestBody } from '../shared/interfaces/types';
 import { AuthService } from './auth.service';
 import { HttpService } from './http.service';
 import { WSService } from './ws.service';
@@ -15,14 +15,21 @@ export class ProfessionalDataService {
   private readonly errorMethodSuffix = 'ERROR';
   // Guarda os handlers registrados para os eventos.
   private methods: ProfessionalDataServiceMethod = {
+    OPEN: [],
+
     GET_ALL: [],
     GET_ALL_ROOMS: [],
-    OPEN: [],
-    ADD_APPOINTMENT: [],
-    DELETE_APPOINTMENT: [],
-    ADD_EVENTUAL_SCHEDULE: [],
-    DELETE_EVENTUAL_SCHEDULE: [],
     GET_SCHEDULES: [],
+ 
+    ADD_APPOINTMENT: [],
+    ADD_EVENTUAL_SCHEDULE: [],
+    ADD_ROOM: [],
+
+    UPDATE_ROOM: [],
+
+    DELETE_APPOINTMENT: [],
+    DELETE_EVENTUAL_SCHEDULE: [],
+    DELETE_ROOM: []
   };
 
   // Guarda todas as requisições que foram feitas enquanto o Websocket se conectava.
@@ -36,6 +43,7 @@ export class ProfessionalDataService {
 
     // Se conecta com o Websocket e faz todas as requisições agendadas.
     this._WSService.wsObserver.subscribe((ws: WebSocket) => {
+      console.log(ws);
       this.ws = ws;
 
       this.ws.addEventListener('message', ({ data }) => {
@@ -93,13 +101,16 @@ export class ProfessionalDataService {
     this.ws.send(stringfiedMessage);
   }
 
-  /* =============================================================== 
+  /* ==================================================================== 
     Métodos do Websocket - 
 
     Todos eles enviam uma mensagem com o método do nome 
     função com exceção de funções criadas como interface para usar
     um método. Nelas o token já é injetado por padrão.
-  ===============================================================  */
+
+    Por mais que não houvesse a necessidade da criação desses métodos,
+    torna mais fácil o uso do serviço
+  =======================================================================  */
 
   public getAll(body: GetAllRequestBody){
     this.send('GET_ALL', body);
@@ -109,18 +120,32 @@ export class ProfessionalDataService {
     this.send('GET_ALL_ROOMS');
   }
 
+  public getSchedules(body: GetSchedulesRequestBody){
+    this.send('GET_SCHEDULES', body);
+  }   
+
   public addEventualSchedule(body: AddEventualScheduleRequestBody){
     this.send('ADD_EVENTUAL_SCHEDULE', body);
+  }
+
+  public addRoom(body: AddRoomRequestBody){
+    this.send('ADD_ROOM', body)
+  }
+
+  public updateRoom(body: UpdateRoomRequestBody){
+    this.send('UPDATE_ROOM', body)
   }
 
   public deleteEventualSchedule(body: DeleteEventualScheduleRequestBody){
     this.send('DELETE_EVENTUAL_SCHEDULE', body);
   }
 
-  public getSchedules(body: GetSchedulesRequestBody){
-    this.send('GET_SCHEDULES', body);
-  }   
+  public deleteRoom(body: DeleteRoomRequestBody){
+    this.send('DELETE_ROOM', body)
+  }
+
   
+
   /**  
    * Chama o método 'ADD_EVENTUAL_SCHEDULE' passando o eventualState como 
    * BLOCKED_BY_ADMIN caso o usuário logado seja um administrador ou BLOCKED_BY_PROFESSIONAL

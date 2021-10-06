@@ -39,13 +39,14 @@ export class WSService {
     client.addEventListener('open', (event) => {
       this.ready = true;
       this.ws = event.target as WebSocket;
-      observer?.next(this.ws);
 
       client.addEventListener('close', () => { 
         this.ws = null; 
         this.ready = false; 
-        this.tries = 0 
+        this.tries = 0;
       });
+
+      observer?.next(this.ws);
     });
 
     client.addEventListener('error', (event) => {

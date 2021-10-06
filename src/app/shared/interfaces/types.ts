@@ -67,6 +67,20 @@ export interface GetSchedulesRequestBody {
     componentId?: componentId;
 }
 
+export interface AddRoomRequestBody {
+    name: string;
+    componentId?: componentId;
+}
+
+export interface UpdateRoomRequestBody extends Room {
+    componentId?: componentId;
+}
+
+export interface DeleteRoomRequestBody {
+    roomId: number;
+    componentId?: componentId;
+}
+
 
 
 export interface GetAllMessageData {

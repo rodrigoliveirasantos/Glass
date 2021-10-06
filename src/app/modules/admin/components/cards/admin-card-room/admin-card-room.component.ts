@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Room } from 'src/app/shared/interfaces/types';
 
 @Component({
   selector: 'app-admin-card-room',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin-card-room.component.scss']
 })
 export class AdminCardRoomComponent implements OnInit {
+  selectedRoom!: Room;
 
   constructor() { }
 

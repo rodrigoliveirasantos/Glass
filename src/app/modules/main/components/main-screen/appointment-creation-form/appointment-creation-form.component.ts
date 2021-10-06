@@ -7,6 +7,7 @@ import { ModalService } from 'src/app/services/modal.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Room } from 'src/app/shared/interfaces/types';
 import Global from 'src/app/shared/global';
+import { RoomService } from 'src/app/services/room.service';
 
 @Component({
   selector: 'app-appointment-creation-form',
@@ -34,21 +35,20 @@ export class AppointmentCreationFormComponent implements OnInit {
   constructor(
     private _profissionalControlService: ProfessionalControlService, 
     private _professionalDataService: ProfessionalDataService, 
+    private _roomService: RoomService,
     private _modalService: ModalService,
     private _authService: AuthService,
   ) {
-    this._professionalDataService.on('GET_ALL_ROOMS', (message) => {
-      this.rooms = message.data.rooms;
+    this._roomService.getRooms((rooms) => {
+      this.rooms = rooms;
     });
 
     this._professionalDataService.on('GET_ALL_ROOMS_ERROR', (message) => {
       this.closeParentModal();
-      this._modalService.error('Houve um erro ao pegar ao pegar as salas. Por favor, tente novamente mais tarde. Detalhes: <br/><br/>' + message.error);
     });
   }
 
   ngOnInit(): void {
-    this._professionalDataService.getAllRooms();
 
     const professional = this._profissionalControlService.getSelectedProfessional();
     this.professionalName = professional?.name || 'Não foi possível';

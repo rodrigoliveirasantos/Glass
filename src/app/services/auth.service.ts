@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpService } from './http.service';
+import { WSService } from './ws.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { HttpService } from './http.service';
 export class AuthService {
 
   private readonly tokenFieldName = 'user_token';
-  constructor(private _http: HttpService, private _router: Router) { }
+  constructor(private _http: HttpService, private _router: Router, private _wsService: WSService) { }
 
   public async login(cpf: string, password: string) {
     const body = { cpf, password };
@@ -25,6 +26,7 @@ export class AuthService {
   public logout() {
     localStorage.removeItem(this.tokenFieldName);
     this._router.navigate(['/']);
+    this._wsService.getClient()?.close();
   }
 
   public isLogged() {
