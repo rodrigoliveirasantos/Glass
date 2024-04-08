@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscriber } from 'rxjs';
 import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,12 @@ export class WSService {
   public ready = false;
 
   constructor(private _router: Router) {
-    
+
   }
 
   private onSubscribe(observer: Subscriber<unknown>){
     if (this.ws) return observer.next(this.ws);
-    this.createConnection('ws://localhost:9876/schedule', observer);
+    this.createConnection('ws://985b-179-155-15-189.ngrok-free.app/schedule', observer);
   }
 
   private createConnection = (url: string, observer?: Subscriber<unknown>, errorData?: any) => {
@@ -26,7 +27,7 @@ export class WSService {
       console.log(errorData);
     }
 
-    if (this.tries++ === 8){ 
+    if (this.tries++ === 8){
       alert('Houve um erro ao se conectar com o servidor.');
       this._router.navigate(['/']);
       return;
@@ -40,9 +41,9 @@ export class WSService {
       this.ready = true;
       this.ws = event.target as WebSocket;
 
-      client.addEventListener('close', () => { 
-        this.ws = null; 
-        this.ready = false; 
+      client.addEventListener('close', () => {
+        this.ws = null;
+        this.ready = false;
         this.tries = 0;
       });
 
