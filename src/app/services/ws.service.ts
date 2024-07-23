@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscriber } from 'rxjs';
 import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class WSService {
 
   private onSubscribe(observer: Subscriber<unknown>){
     if (this.ws) return observer.next(this.ws);
-    this.createConnection('ws://localhost:9876/schedule', observer);
+    const url = environment.url_api.replace('http(s)?', 'ws')
+    this.createConnection(`${url}/schedule`, observer);
   }
 
   private createConnection = (url: string, observer?: Subscriber<unknown>, errorData?: any) => {
