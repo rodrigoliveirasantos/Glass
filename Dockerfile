@@ -13,4 +13,4 @@ RUN npm install -g @angular/cli@~12.1.1
 EXPOSE 4200
 
 # start app
-CMD ng serve --host 0.0.0.0
+CMD ng serve --watch --host 0.0.0.0

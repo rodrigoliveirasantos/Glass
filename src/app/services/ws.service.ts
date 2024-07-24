@@ -19,7 +19,8 @@ export class WSService {
 
   private onSubscribe(observer: Subscriber<unknown>){
     if (this.ws) return observer.next(this.ws);
-    const url = environment.url_api.replace('http(s)?', 'ws')
+    const url = environment.url_api.replace(/http(s)?/, 'ws')
+    console.log(url)
     this.createConnection(`${url}/schedule`, observer);
   }
 
@@ -28,7 +29,7 @@ export class WSService {
       console.log(errorData);
     }
 
-    if (this.tries++ === 8){
+    if (++this.tries % 6 === 0){
       alert('Houve um erro ao se conectar com o servidor.');
       this._router.navigate(['/']);
       return;
